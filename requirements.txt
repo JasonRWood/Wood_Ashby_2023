@@ -1,0 +1,13 @@
+pandas
+matplotlib
+cython
+numpy
+math
+datetime
+multiprocessing
+imageio
+plotly
+seaborn
+sys
+os
+shutil
