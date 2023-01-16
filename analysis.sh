@@ -7,6 +7,7 @@ mkdir alpha_evo
 cp tracker_file_base_version.csv tracker_file.csv
 cd ../
 mkdir supplementary_figures
+pip install -r requirements.txt
 cd H-P-HP/
 python3 setup.py build_ext --inplace
 python3 ad_dyn_hysteresis.py

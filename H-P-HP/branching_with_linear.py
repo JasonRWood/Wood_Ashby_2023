@@ -1,14 +1,23 @@
+""" This file produces a single plot showing branching for a given value of 
+eta and lambda. This file uses the pandas, numpy, math, and matplotlib 
+libraries. This library also uses a custom runner library created using
+cyton and local cpp files.
+"""
+
+#Importing libraries needed to perform the analysis
 import pandas as pd
 import numpy as np
 from math import exp
 import runner
 import matplotlib.pyplot as plt
-from scipy.optimize import root, root_scalar
 
+#Invoking the cpp based solver
 sol = runner.PySolver()
 
+#Creating the panel labels we will use in our figures
 panel_labels = ["(A)", "(B)", "(C)", "(D)"]
 
+#Parameters of the system
 b = 2.0
 q = 0.1
 d = 0.1
@@ -23,50 +32,65 @@ hyper = 1.0
 beta_scalar = 1.0
 rho = 0.5
 
+#The specific values of eta and lambda chosen for this plot
 eta = 0.25
 lam = 5.0
 
+#The seed used to track the simulation, and the number of evolutionary steps
 seed = 10000
 evo_step_size = 2000
 
-beta_max = 5.0
+#The limits of the parameter space for the parasite
 alpha_min = 0.0
 alpha_max = 5.0
 
-
+#The parameters of the trade-off
 beta_max = 0.5
 beta_lin = 1.0
 c2 = -60
 
+#Performing the simulation in the absence of the hyperparasite to get a baseline
 seed_for_baseline = 10
 rho_baseline = eta_baseline = lam_baseline = 0.0
 sol.alpha_ad_dyn_v4(beta_max, beta_lin, alpha_max, alpha_min, sigma_max, b, q, d, rho_baseline, eta_baseline, gamma, lam_baseline, c1, c2, beta_scalar, 0.0, seed_for_baseline, alpha_init, sigma_init)
 
+#Reading in the data associated with the baseline simulation
 df_baseline = pd.read_csv(f"../data/alpha_evo/data_set{seed_for_baseline}.csv")
 evo_steps = df_baseline["Evolutionary_step"].values
 
+#Calculate the proportion of the population with each trait value
 dft = df_baseline[df_baseline["Evolutionary_step"]==evo_steps[-1]]
 pops = []
 for val in dft["Trait_index_1"].values:
     df_pop = dft[dft["Trait_index_1"]==val][["Density_of_parasite"]]
     pops.append((df_pop["Density_of_parasite"].iloc[0])/(sum(dft["Density_of_parasite"].values)))
     
+#Calculating the average trait value
 alpha_weights = []
 for i, val in enumerate(pops):
     alpha_weights.append(val*dft["Trait_index_1"].values[i])
 alpha_mean = sum(alpha_weights)
+
+#Rounding this to the closest integer to use as our initial conditions
 alpha_init = round(alpha_mean)
 
+#The densities we initiate our populations with, taken from the end of the simulation
+#without the hyperparasite present
 host_density = dft["Density_of_hyperparasite"].iloc[0]
 para_density = sum(dft["Density_of_parasite"].values)
+
+#Initialising the hyperparasites with a low density
 hyper_density = 0.1
 
+#Performing the simulations with the hyperparasite present
 sol.alpha_ad_dyn_v4(beta_max, beta_lin, alpha_max, alpha_min, sigma_max, b, q, d, rho, eta, gamma, lam, c1, c2, beta_scalar, hyper, seed, alpha_init, sigma_init, evo_step_size, S_density = host_density, I_density = para_density, H_density = hyper_density)
 
+#Reading in the data associated with hyperparasite simulation
 df = pd.read_csv(f"../data/alpha_evo/data_set{seed}.csv")
 alpha_vals = df["alpha_val"].values
 evo_steps = df["Evolutionary_step"].values
 
+#Finding the point at which branching occurs
 branching_flag = False
 for step in set(evo_steps):
     dft = df[df["Evolutionary_step"]==step]
@@ -74,12 +98,13 @@ for step in set(evo_steps):
     for i, val in enumerate(trait_temps[:-1]):
         if trait_temps[i+1] - val > 1:
             branching_step = step
-            print(branching_step)
             branching_flag = True
             break
     if branching_flag:
         break
 
+#Creating a calculating the various populations of hosts, parasites and 
+#hyperparasites, before and after the branching event
 S_vals = []
 I_vals_pre_branch = []
 H_vals_pre_branch = []
@@ -142,7 +167,8 @@ for val in evo_steps_unique:
     else:
         evo_steps_post_branch.append(val)
         
-        
+#Rerunning the simulations without the hyperparasite to track the population of hosts and
+#parasites when the hyperparasite is absent
 sol.alpha_ad_dyn_v4(beta_max, beta_lin, alpha_max, alpha_min, sigma_max, b, q, d, rho, eta, gamma, lam, c1, c2, beta_scalar, 0.0, seed + 1, alpha_init, sigma_init, evo_step_size)
 
 df_2 = pd.read_csv(f"../data/alpha_evo/data_set{seed+1}.csv")
@@ -153,7 +179,6 @@ dft = df_2[df_2["Evolutionary_step"]==evo_steps_2[-1]]
 pops = []
 for val in dft["alpha_val"].values:
     df_pop = dft[dft["alpha_val"]==val][["Density_of_parasite","Density_of_hyperparasite"]]
-    print(df_pop)
     pops.append((df_pop["Density_of_parasite"].iloc[0])/(sum(dft["Density_of_parasite"].values)))
     
 alpha_weights = []
@@ -165,11 +190,12 @@ host_density = [dft["Density_of_Hosts"].iloc[0] for i in range(evo_steps_2[-1] +
 para_density = [sum(dft["Density_of_parasite"].values) for i in range(evo_steps_2[-1] + 1)]
 alpha_means = [alpha_mean for i in range(evo_steps_2[-1]+1)]
 evo_plotting_mean = [i for i in range(evo_steps_2[-1]+1)]
-# fig, ax = plt.subplots(1, 2, figsize = (20, 40))
+
+#Creating the figures
 fig = plt.figure(figsize = (10, (2/3)*10))
 plt.subplots_adjust(wspace=0.25, hspace = 0.5)
 gs = fig.add_gridspec(3,2)
-ax = [fig.add_subplot(gs[:, 0]), fig.add_subplot(gs[0,1]), fig.add_subplot(gs[1,1]), fig.add_subplot(gs[2,1])]#, fig.add_subplot(gs[3,1])]
+ax = [fig.add_subplot(gs[:, 0]), fig.add_subplot(gs[0,1]), fig.add_subplot(gs[1,1]), fig.add_subplot(gs[2,1])]
 
 ax[0].scatter(alpha_vals_pre_branch, evo_steps_pre_branch_sim)
 ax[0].scatter(alpha_branch_1, evo_steps_branch_1)
@@ -179,15 +205,15 @@ ax[0].set_xlim([0,2])
 ax[0].set_ylim([0, max(evo_steps)])
 ax[0].set_xlabel(r"Parasite virulence, $\alpha$", fontsize = 12)
 ax[0].set_ylabel("Evolutionary Time", fontsize = 12)
-ax[0].text(0.02,0.9,panel_labels[0], transform=ax[0].transAxes, fontsize = 11)
+ax[0].text(0.02,1.01,panel_labels[0], transform=ax[0].transAxes, fontsize = 11)
 
 ax[1].plot(evo_steps_unique, S_vals)
 ax[1].plot(evo_plotting_mean, host_density, "k--")
-ax[1].set_title("Population Denisties", fontsize = 14)
+ax[1].set_title("Population Densities", fontsize = 14)
 ax[1].set_xlim([0, max(evo_steps)])
 ax[1].set_ylim([0, 2])
 ax[1].set_ylabel(r"Susceptible Hosts", fontsize = 12)
-ax[1].text(0.02,0.8,panel_labels[1], transform=ax[1].transAxes, fontsize = 11)
+ax[1].text(0.02,1.05,panel_labels[1], transform=ax[1].transAxes, fontsize = 11)
 
 max_I_values = [max(I_vals_pre_branch), max(I_branch_1), max(I_branch_2)]
 max_H_values = [max(H_vals_pre_branch), max(H_branch_1), max(H_branch_2)]
@@ -197,21 +223,22 @@ ax[2].plot(evo_steps_post_branch, I_branch_1)
 ax[2].plot(evo_steps_post_branch, I_branch_2)
 ax[2].plot(evo_steps_post_branch, I_post_branch_total, "C0--")
 ax[2].set_xlim([0, max(evo_steps)])
-# ax[2].set_ylim([0, max(max(max_I_values), 3)])
+
 ax[2].set_ylabel(r"Parasitised Hosts", fontsize = 12)
-ax[2].text(0.02,0.65,panel_labels[2], transform=ax[2].transAxes, fontsize = 11)
+ax[2].text(0.02,1.05,panel_labels[2], transform=ax[2].transAxes, fontsize = 11)
 
 ax[3].plot(evo_steps_pre_branch, H_vals_pre_branch)
 ax[3].plot(evo_steps_post_branch, H_branch_1)
 ax[3].plot(evo_steps_post_branch, H_branch_2)
 ax[3].plot(evo_steps_post_branch, H_post_branch_total, "C0--")
 ax[3].set_xlim([0, max(evo_steps)])
-# ax[3].set_ylim([0, max(max(max_H_values), 3)])
+
 ax[3].set_ylim([0, 1.5])
 ax[3].set_ylabel(r"Hyperparasitised Hosts", fontsize = 12)
 ax[3].set_xlabel("Evolutionary Time", fontsize = 10)
-ax[3].text(0.02,0.8,panel_labels[3], transform=ax[3].transAxes, fontsize = 11)
+ax[3].text(0.02,1.05,panel_labels[3], transform=ax[3].transAxes, fontsize = 11)
 
+#Saving the figure as a png and a pdf
 plt.savefig("../supplementary_figures/branching_fig.pdf", bbox_inches = "tight")
 plt.savefig("../supplementary_figures/branching_fig.png", bbox_inches = "tight")
 plt.close()

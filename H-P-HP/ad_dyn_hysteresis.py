@@ -1,12 +1,15 @@
+"""This file demonstrates the consequences of the hysteresis affect caused by the introduction
+of hyperparasites.
+"""
+
+#We import the libraries we need
 import sys, os, shutil
 import runner
 import numpy as np
-
 import matplotlib.pyplot as plt
-
-
 import pandas as pd
 
+#Parameters used in the system
 rho = 0.9
 
 lam = 2.0
@@ -35,15 +38,32 @@ hyper = 1.0
 c1 = 0.75
 c2 = 2.25
 
+#We initialise the system with the hyperparasites absent to find the natural ESS of the parasite
 sol.alpha_ad_dyn(beta_max, alpha_max, sigma_max, b, q, d, rho, 0.0, gamma, 0.0, c1, c2, 0.0, seed, alpha_init, sigma_init, H_density = 0.0)
 df = pd.read_csv(f"../data/alpha_evo/data_set{seed}.csv")
 
 evo_steps = df["Evolutionary_step"].values
 dft = df[df["Evolutionary_step"]==evo_steps[-1]]
+
+pops = []
+for val in dft["Trait_index_1"].values:
+    df_pop = dft[dft["Trait_index_1"]==val][["Density_of_parasite"]]
+    pops.append((df_pop["Density_of_parasite"].iloc[0])/(sum(dft["Density_of_parasite"].values)))
+    
+#Calculating the average trait value
+alpha_weights = []
+for i, val in enumerate(pops):
+    alpha_weights.append(val*dft["Trait_index_1"].values[i])
+alpha_mean = sum(alpha_weights)
+
+#Rounding this to the closest integer to use as our initial conditions
+alpha_init = round(alpha_mean)
+
 host_density = dft["Density_of_hyperparasite"].iloc[0]
 para_density = sum(dft["Density_of_parasite"].values)
 hyper_density = 0.1
 
+#We iterate through the list of etas, showing the consequences of the hysteresis affect
 for eta in etas:
     
     sol.alpha_ad_dyn(beta_max, alpha_max, sigma_max, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed, alpha_init, sigma_init, S_density = host_density, I_density = para_density, H_density = hyper_density)
@@ -74,11 +94,16 @@ for eta in etas:
 del sol
 
 
+#Here we visualise the plots by sequencing them after each other using
+#this upshift
 up_shift = []
 for i in range(len(etas)):
     up_shift.append(i*1001)
     
+#Colours associated with the values of eta
 colours = {0.5:"black", 0.2:"indigo", 1.0:"red"}
+
+#Creating and saving the figure
 fig, ax = plt.subplots()
     
 tagged_labels = []

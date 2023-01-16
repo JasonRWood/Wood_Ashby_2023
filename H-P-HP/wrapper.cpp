@@ -1183,10 +1183,10 @@ namespace solvers{
         // else{
         //     y[2] = 0.0;
         // }
-        y[0] = S_density;
-        y[1] = I_density;
+        y[0] = S_density/(b/q);
+        y[1] = I_density/(b/q);
         if (hyper > 0.0){
-            y[2] = H_density;
+            y[2] = H_density/(b/q);
         }
         else{
             y[2] = 0.0;

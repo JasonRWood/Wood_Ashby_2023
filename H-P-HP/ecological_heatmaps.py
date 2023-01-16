@@ -88,12 +88,9 @@ for eta_tracker, eta in enumerate(etas):
                 else:
                     print(S,I,H)
                     flop
-#                 score = (S > 1e-3) + (I > 1e-3) + (H > 1e-3)
-#                 score = (S > 0) + (I > 0) + (H > 0)
-#                 print((b - d)/q)
+                    
                 temp_row.append(score)
             current_mat.append(temp_row)
-#         print(current_mat)
         
         ax[eta_tracker][lam_tracker].imshow(current_mat, origin = "lower", cmap = "tab10")
         
@@ -104,7 +101,7 @@ for eta_tracker, eta in enumerate(etas):
         alpha_ticks = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]
         beta_ticks = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]
         ticks = [i for i in ticks_temp if alphas[i] in alpha_ticks]
-#         print(ticks)
+        
         ax[eta_tracker][lam_tracker].set_yticks(ticks = ticks, labels = beta_ticks, fontsize = 2*resolution/3)
         ax[eta_tracker][lam_tracker].set_xticks(ticks = ticks, labels = alpha_ticks, fontsize = 2*resolution/3, rotation=45)
         ax[eta_tracker][lam_tracker].set_title(fr"$\eta$ = {eta} and $\lambda$ = {lam}", fontsize = 2*resolution/3)
@@ -113,7 +110,7 @@ for eta_tracker, eta in enumerate(etas):
         if lam_tracker == 1 and eta_tracker == 2:
             ax[eta_tracker][lam_tracker].set_xlabel(r"Parasite virulence , $\alpha$", fontsize = 2*resolution/3)
         ax[eta_tracker][lam_tracker].text(0.05,0.9,panel_labels[eta_tracker][lam_tracker], transform=ax[eta_tracker][lam_tracker].transAxes, fontsize = 300/3)    
+        
 plt.savefig(f"../supplementary_figures/ecological_heatmaps.pdf", bbox_inches = "tight")
 plt.savefig(f"../supplementary_figures/ecological_heatmaps.png", bbox_inches = "tight")
 plt.close()
-#         flop
