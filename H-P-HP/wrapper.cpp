@@ -531,23 +531,6 @@ namespace solvers{
     int Quick_solver::ad_dyn(float beta_max, float alpha_max, float sigma_max, float b, float q, float d, float rho, float eta, float gamma, float lambda, float c1, float c2, float hyper, int seed, int alpha_init, int sigma_init){
         time_t start,end;
         time (&start);
-        // float beta_max, alpha_max, sigma_max, b, q, d, rho, eta, gamma, lambda, c1, c2, hyper;
-        // int seed;
-
-        // beta_max = this->beta_max;
-        // alpha_max = this->alpha_max;
-        // sigma_max = this->sigma_max;
-        // b = this->b;
-        // q = this->q;
-        // d = this->d;
-        // rho = this->rho;
-        // eta = this->eta;
-        // gamma = this->gamma;
-        // lambda = this->lambda;
-        // c1 = this->c1;
-        // c2 = this->c2;
-        // hyper = this->hyper;
-        // seed = this->seed;
 
         srand(seed);
         
@@ -560,10 +543,7 @@ namespace solvers{
         float* y_check = new float[2*trait_space_length + 1];
         float* dydt = new float[2*trait_space_length + 1];
         float* yScale = new float[2*trait_space_length + 1];
-        // float y[2*trait_space_length+1];
-        // float y_check[2*trait_space_length + 1];
-        // float dydt[2*trait_space_length + 1];
-        // float yScale[2*trait_space_length + 1];
+        
         float* y_max = new float[2*trait_space_length + 1];
         float* y_min = new float[2*trait_space_length + 1];
         float* y_max_next = new float[2*trait_space_length + 1];
@@ -576,7 +556,7 @@ namespace solvers{
         int alpha_inds_2[trait_space_length];
         int sigma_inds_2[trait_space_length], int_tracker[1];
         float* y_temp = new float[2*trait_space_length+1];
-        // float y_temp[2*trait_space_length+1];
+        
         float h[1], hnext[1], discrepancy[1];
 
         int num_poss_outputs = 40000;
@@ -587,30 +567,17 @@ namespace solvers{
         ind = 0;
         ofstream myfile, tracker_file;
         
-        // string seed_str;
-        // seed_str = std::to_string(seed);
-        // myfile.open("../data/coevo/data_set"+seed_str+".csv");
-        // myfile << "Trait_index_1,Trait_index_2,Density_of_Hosts,Density_of_parasite,Density_of_hyperparasite,Evolutionary_step,hyperparasites_present,alpha_val,sigma_val,beta_val\n";
-        
-        // ofstream logs;
-        // logs.open("../data/logs.csv", std::ios_base::app);
-
-        // beta[i,j] = h(alpha[i], sigma[j]);
-        // sigma[i] = f(beta[i]);
-        // alpha[i] = g(beta[i]);
 
         for(i=0;i<trait_space_length;i++){
-            // betat[i] = (beta_max*i)/trait_space_length;
-            // alpha[i] = (-1/a1)*(log((beta_max-betat[i])/beta_max));
+            
             alpha[i] = (alpha_max*(i))/(trait_space_length - 1);
             sigma[i] = (sigma_max*(i))/(trait_space_length - 1);
-            // sigma[i] = sigma_max*(exp(0.2*betat[i])) + 1;
-            // alpha[i] = pow(beta[i],power);
+            
         }
 
         for(i=0;i<trait_space_length;i++){
             for(j=0;j<trait_space_length;j++){
-                // beta[i*trait_space_length+j] = (betat[i] + betat[j])/2;
+                
                 if (c2 == 0.0){
                     beta[i*trait_space_length + j] = beta_max*(sqrt(alpha[i]/alpha_max)*((1-c1) + c1*(sigma[j]/sigma_max)));
                 }
@@ -659,7 +626,6 @@ namespace solvers{
         beta_values.close();
         alpha_values.close();
         sigma_values.close();
-        // [[0,....,2.5],[0.01,...,2.6],...,[2.5,...,5]]
 
         y[0] = 4.0;
         y[1] = 4.0;
@@ -672,23 +638,17 @@ namespace solvers{
 
         alpha_inds[0] = alpha_init;
         sigma_inds[0] = sigma_init;
-        // std::cout << "Done Initial conditions\n";
         
-        // std::cout << fastmax(10,241) << endl;
+        
         num_strains = 1;
         for (int evo_counter = 0; evo_counter < evo_steps; evo_counter++){
             
-            // std::cout << "In for loop step number " << evo_counter << " \n";
-            // float grad_max;
             t[0] = 0.0;
             h[0] = 1e-1;
             hnext[0] = 1e-1;
 
             float y_check_sum = 0.0;
-            // time_t start_eco,end_eco;
-            // time (&start_eco);
-            // int check_counter = 0;
-            // std::cout << "number of strains pre solver " << num_strains << endl;
+            
             tcheck[0] = 10.0;
             for(i=0;i<(2*num_strains + 1);i++){
                 y_check[i] = y[i];
@@ -697,9 +657,7 @@ namespace solvers{
                 y_max_next[i] = y[i];
                 y_min_next[i] = y[i];
                 y_check_sum += y[i];
-                // y_max[i] = y[i];
-                // y_min[i] = y[i];
-                // std::cout << "y value pre-solver is " << y[i] << endl;
+                
             }
             int step_count = 0;
             int check_count = 0;
@@ -710,24 +668,13 @@ namespace solvers{
                 num_plus[0] = 0;
                 num_down[0] = 0;
 
-                // h[0] = 1.0;
-                // grad_max = 0.0;
                 /* This is where the equations are first solved */
                 dynamics(dydt, y, num_strains, alpha_inds, sigma_inds, b, q, d, beta, alpha, eta, gamma, sigma, lambda, rho);
 
                 /* Adjust the step size to maintain accuracy */
                 for (i=0; i<(2*num_strains + 1); i++){
                     yScale[i]=fabs(y[i])+fabs(dydt[i]*(*h))+EPS;
-                    // grad_max = Quick_solver::fastmax(grad_max, abs(dydt[i]));
                 }
-
-                // t[0] += h[0];
-                // if((grad_max < 1e-3) && (t[0] >= tcheck[0])){
-                //     t[0] = tmax + 1.0;
-                // }
-                // else{
-
-                // perform_RK45_step(y,t,num_strains,alpha_inds,sigma_inds,b,q,d,beta,alpha,eta,gamma,sigma,lambda,rho, h, discrepancy, counter,num_plus,num_down);
                 
                 rkqs(y, dydt, h,hnext,yScale, num_strains, alpha_inds, sigma_inds, b, q, d, beta, alpha, eta, gamma, sigma, lambda, rho,counter,num_plus,num_down,discrepancy, int_tracker, t);
                 
@@ -747,40 +694,23 @@ namespace solvers{
                 t[0]+=h[0];
                 h[0] = hnext[0];
                 
-                // logs << t[0] << "," << evo_counter << "," << counter[0] << "," << num_plus[0] << "," << num_down[0] << "," << h[0] << "," << discrepancy[0] << "," << int_tracker[0];
                 
                 for(i=0;i<(2*num_strains + 1);i++){
-                    // logs << "," << y[i];
                     y_max[i] = fastmax(y[i], y_max[i]);
-                    // y_max_next[i] = y[i]*(y[i] > y_max_next[i]) + y_max_next[i]*(y[i] <= y_max_next[i]);
                     y_min[i] = fastmin(y[i], y_min[i]);
-                    // y_min_next[i] = y[i]*(y[i] < y_min_next[i]) + y_min_next[i]*(y[i] >= y_min_next[i]);
                 }
-                // logs << "\n";
                 step_count += 1;
                 
                 if ((((t[0] - tcheck[0]) >= 10.0) && (step_count - check_count) >= 200) && (y[0] != 0.0)){
                     discrep_check = 0.0;
                     check_count = step_count;
-                    // for(i=0;i<(2*num_strains + 1);i++){
-                    //     y_max[i] = fastmax(y[i],y_max[i]);
-                    //     y_min[i] = fastmin(y[i], y_min[i]);
-                    //     // std::cout << "y value pre-solver is " << y[i] << endl;
-                    // }
                     for(i=0;i<(2*num_strains + 1);i++){
-                        // discrep_check = fastmax(discrep_check,abs((y_check[i] - y[i])/(y_check[i] + EPS)));
 
-                        
                         if (y[i] >= TINY){
                             if (discrep_check < fastmax(abs(y_max[i] - y_max_next[i]),abs(y_min[i] - y_min_next[i]))){
-                                // discrep_check = (y_max[i] - y_min[i])/(y_min[i] + EPS);
                                 discrep_check = fastmax(abs(y_max[i] - y_max_next[i]),abs(y_min[i] - y_min_next[i]));
-                                // std::cout << "The difference between the maxes is " << abs((y_max[i] - y_max_next[i])) << " and the difference between the mins is " << abs((y_min[i] - y_min_next[i])) << " for ind " << i <<  " on evolutionary step " << evo_counter << " with current problem ind " << problem_ind <<  "\n";
-                                // std::cout << "For max from previous check " << y_max[i] << " and max from most recent ecosolving " << y_max_next[i] << "\n";
-                                // std::cout << "For min from previous check " << y_min[i] << " and min from most recent ecosolving " << y_min_next[i] << "\n";
                             }
                         }
-                        // discrep_check = fastmax(abs(y_max[i] - y_min[i]), discrep_check);
                     }
 
                     if (discrep_check >= 1e-3){
@@ -932,7 +862,7 @@ namespace solvers{
                         if (sigma_inds_cleaned[i] == (sigma_inds_cleaned[ind] + 1) && (alpha_inds_cleaned[i] == alpha_inds_cleaned[ind])){
                             flag = false;
                             increment_ind = i;
-                            // std::cout << "Sigma increment ind is" << increment_ind << endl;
+                            
                             break;
                         }
                     }
@@ -946,7 +876,7 @@ namespace solvers{
                         }
                     }
                 }
-                // std::cout << "\n num_strains_2 after incrementing in sigma step" << endl;
+                
                 if(flag){
                     num_strains_2++;
                 }
@@ -964,8 +894,6 @@ namespace solvers{
                 }
 
                 num_strains = num_strains_2;
-                // std::cout << "Reallocated number of strains" << endl;
-                // std::cout << num_strains_2 << endl;
 
                 for(i = 0; i<(2*num_strains+1); i++){
                     y[i] = 0.0;
@@ -1009,10 +937,10 @@ namespace solvers{
                 // Doing alpha mutation
                 if (((rand_stored2 >=0.5) && (alpha_inds_cleaned[ind] != (trait_space_length-1))) || (alpha_inds_cleaned[ind] == 0)){
                     for(i=0;i<num_strains_cleaned;i++){
-                        if (alpha_inds_cleaned[i] == (alpha_inds_cleaned[ind] + 1)){
+                        // Checking if a population already exists with the trait index we care about
+                        if (alpha_inds_cleaned[i] == (alpha_inds_cleaned[ind] + 1) && (sigma_inds_cleaned[i] == sigma_inds_cleaned[ind])){
                             flag = false;
                             increment_ind = i;
-                            // std::cout << "Alpha increment ind is" << increment_ind << endl;
                             break;
                         }
                     }
@@ -1026,12 +954,10 @@ namespace solvers{
                         }
                     }
                 }
-                // std::cout << "\n num_strains_2 after incrementing in alpha step" << endl;
-                // int num_strains_2 = num_strains_cleaned;
+                
                 if(flag){
                     num_strains_2++;
                 }
-                // std::cout << num_strains_2 << endl;
 
                 y_temp[0] = y[0];
                 for(i = 0; i<num_strains_2;i++){
@@ -1045,7 +971,6 @@ namespace solvers{
                     y_temp[i+1+num_strains_2] = H_temp[i];
                 }
 
-                // std::cout << "Reallocated number of strains" << endl;
                 num_strains = num_strains_2;
 
                 for(i = 0; i<(2*num_strains+1); i++){
@@ -1087,22 +1012,7 @@ namespace solvers{
                 }
             }
 
-            // std::cout << "Post Ad dyn " << endl;
-            // for (i =0; i<(2*num_strains+1); i++){
-            //     std::cout << y[i] << endl;
-            // }
-
             for(i=0;i<num_strains;i++){
-                // myfile << alpha_inds[i] << ",";
-                // myfile << sigma_inds[i] << ",";
-                // myfile << y[0] << ",";
-                // myfile << y[i+1] << ",";
-                // myfile << y[i + num_strains + 1] << ",";
-                // myfile << evo_counter + 1 << ",";
-                // myfile << (Hsum > 0.0) << ",";
-                // myfile << alpha[alpha_inds[i]] << ",";
-                // myfile << sigma[sigma_inds[i]] << ",";
-                // myfile << beta[alpha_inds[i]*trait_space_length + sigma_inds[i]] << "\n";
                 output_alpha_inds[output_counter] = alpha_inds[i];
                 output_sigma_inds[output_counter] = sigma_inds[i];
                 output_parasite_density[output_counter] = y[i+1];
@@ -1115,17 +1025,7 @@ namespace solvers{
 
             if (evo_counter%100 == 0){
                 std::cout << evo_counter << "\n";
-                // sleep(10);
             }
-            // else{
-            //     std::cout << "evo step is " << evo_counter << "\n";
-            //     // sleep(10);
-            // }
-
-            // std::cout << "The ecological dynamics took " << step_count << " on this evolutionary step \n";
-            // if (evo_counter == 10){
-            //     break;
-            // }
         }
         
         string test;
@@ -1133,15 +1033,15 @@ namespace solvers{
         string seed_str;
         seed_str = std::to_string(seed);
 
+        //Updating the tracker file with our most recent run
         tracker_file.open("../data/tracker_file.csv", std::ios_base::app);
-        // tracker_file << "File_key,b,q,d,rho,sigma,gamma,eta,lambda"
+        
         tracker_file << "/coevo/data_set" + seed_str + ".csv," << b << "," << q << "," << d << "," << rho << "," << sigma_max << "," << gamma;
         tracker_file << "," << eta << "," << lambda << "," << c1 << "," << c2 << "," << beta_max << "," << (hyper > 0.0) << "," << alpha_init << "," << sigma_init  << "\n";
         tracker_file.close();
 
-        // logs.close();
 
-        
+        // This creates and stores the data from our simulation
         myfile.open("../data/coevo/data_set"+seed_str+".csv");
         myfile << "Trait_index_1,Trait_index_2,Density_of_Hosts,Density_of_parasite,Density_of_hyperparasite,Evolutionary_step,hyperparasites_present,alpha_val,sigma_val,beta_val\n";
         
@@ -1175,14 +1075,6 @@ namespace solvers{
         alpha_inds[0] = 0;
         sigma_inds[0] = 0;
 
-        // y[0] = 4.0/(b/q);
-        // y[1] = 4.0/(b/q);
-        // if (hyper > 0.0){
-        //     y[2] = 4.0/(b/q);
-        // }
-        // else{
-        //     y[2] = 0.0;
-        // }
         y[0] = S_density/(b/q);
         y[1] = I_density/(b/q);
         if (hyper > 0.0){
@@ -1208,8 +1100,6 @@ namespace solvers{
             y_max_next[i] = y[i];
             y_min_next[i] = y[i];
             y_check_sum += y[i];
-            // y_max[i] = y[i];
-            // y_min[i] = y[i];
         }
         hnext[0] = 1e-2;
 
@@ -1230,6 +1120,7 @@ namespace solvers{
                 yScale[i]=fabs(y[i])+fabs(dydt[i]*(*h))+TINY;
             }
             
+            // Runga Kutta 4th order method to solve the equations
             rkqs(y, dydt, h,hnext,yScale, num_strains, alpha_inds, sigma_inds, b, q, d, beta, alpha, eta, gamma, sigma, lambda, rho,counter,num_plus,num_down,discrepancy, int_tracker, t);
             
             if (y[1] + y[2] <= TINY){
@@ -1246,15 +1137,12 @@ namespace solvers{
             t[0]+=h[0];
 
             for(i=0;i<(2*num_strains + 1);i++){
-                // logs << "," << y[i];
                 y_max[i] = fastmax(y[i], y_max[i]);
-                // y_max_next[i] = y[i]*(y[i] > y_max_next[i]) + y_max_next[i]*(y[i] <= y_max_next[i]);
                 y_min[i] = fastmin(y[i], y_min[i]);
-                // y_min_next[i] = y[i]*(y[i] < y_min_next[i]) + y_min_next[i]*(y[i] >= y_min_next[i]);
             }
-            // logs << "\n";
             step_count += 1;  
             
+            //This section checks the amount of change in all of the populations, if all of the populations experience relatively small changes we exit
             if ((((t[0] - tcheck[0]) >= 10.0) || (step_count - check_count) >= 200) && (y[0] != 0.0)){
                 discrep_check = 0.0;
                 check_count = step_count;
@@ -1287,6 +1175,7 @@ namespace solvers{
             }
         }
 
+        //Returning the values of the populations that we care about 
         S[0] = y[0];
         I[0] = y[1];
         H[0] = y[2];
