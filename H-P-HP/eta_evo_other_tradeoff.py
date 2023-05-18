@@ -38,9 +38,29 @@ lines_cleaned = []
 for line in lines:
     if line[0] != "#" and "www" not in line and line[0] != " ":
         lines_cleaned.append(line[:-1])
+        
+        
+def beta_func(alpha, alpha_max, beta_max, beta_lin, c1, c2):
+    
+    if (c2 == 0.0):
+        alpha_scalar = (1 - c1) + c1*(alpha/alpha_max)
+    else:
+        alpha_scalar = (1 - c1) + c1*(1 - exp(c2*(alpha/alpha_max)))/(1 - exp(c2))
+        
+    beta = beta_max*alpha_scalar + beta_lin*alpha
+    return beta
+
+def dbetadalpha_func(alpha, alpha_max, beta_max, beta_lin, c1, c2):
+    if (c2 == 0.0):
+        alpha_scalar = c1/alpha_max
+    else:
+        alpha_scalar = -c1*(c2/alpha_max)*exp(c2*(alpha/alpha_max))/(1 - exp(c2))
+        
+    dbetadalpha = beta_max*alpha_scalar + beta_lin
+    return dbetadalpha
 
 #This function calculates the gradient vector for a given parameter set
-def calculate_alpha_gradient_vector(sol, resolution, beta_max, alpha_max, alpha_min_res, alpha_max_res, sigma_max, sigma, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed):
+def calculate_alpha_gradient_vector(sol, resolution, beta_max, alpha_max, alpha_min_res, alpha_max_res, beta_lin, sigma, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed):
     
     alpha_grad_vec = []
     alpha_val = []
@@ -52,11 +72,9 @@ def calculate_alpha_gradient_vector(sol, resolution, beta_max, alpha_max, alpha_
         alpha_val.append(alpha)
 
         #and corresponding value of beta and it's derivatives
-        beta = zf.beta_func(beta_max, alpha, alpha_max, sigma, sigma_max, c1, c2)
+        beta = beta_func(alpha, alpha_max, beta_max, beta_lin, c1, c2)
         
-        dbetadalpha = zf.dbetadalpha_func(
-            beta_max, alpha, alpha_max, sigma, sigma_max, c1, c2
-        )
+        dbetadalpha = dbetadalpha_func(alpha, alpha_max, beta_max, beta_lin, c1, c2)
 
         #Solve the system to ecological steady state
         y = sol.eco_steady_state(
@@ -107,7 +125,7 @@ def return_zeros(grad_vec, param_space):
     return poss_attractors, poss_repellers 
     
 #This function calculates the singular strategy using the above functions to calculate the gradient and then find any sign changes
-def recusive_sing_strat_function(sol, depth, iter_max, resolution, beta_max, alpha_max, alpha_min_res, alpha_max_res, sigma_max, sigma, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed):
+def recusive_sing_strat_function(sol, depth, iter_max, resolution, beta_max, alpha_max, alpha_min_res, alpha_max_res, beta_lin, sigma, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed):
     
     
     sing_strats = []
@@ -119,7 +137,7 @@ def recusive_sing_strat_function(sol, depth, iter_max, resolution, beta_max, alp
     #If we have resolved sufficiently we do one final resolution before exiting
     if depth == iter_max:
         #Calculating the alpha gradient vector
-        alpha_grad_vec, alpha_val = calculate_alpha_gradient_vector(sol, resolution, beta_max, alpha_max, alpha_min_res, alpha_max_res, sigma_max, sigma, b, q, d, rho, eta, gamma, lam,c1, c2, hyper, seed)
+        alpha_grad_vec, alpha_val = calculate_alpha_gradient_vector(sol, resolution, beta_max, alpha_max, alpha_min_res, alpha_max_res, beta_lin, sigma, b, q, d, rho, eta, gamma, lam,c1, c2, hyper, seed)
         
         #Identifying singular strategies
         poss_attractors, poss_repellers = return_zeros(alpha_grad_vec,alpha_val)
@@ -135,7 +153,7 @@ def recusive_sing_strat_function(sol, depth, iter_max, resolution, beta_max, alp
     #If we are not at our maximum depth we find possible positions of the singular strategy
     else:
         #First we calculate the alpha gradient
-        alpha_grad_vec, alpha_val = calculate_alpha_gradient_vector(sol, resolution, beta_max, alpha_max, alpha_min_res, alpha_max_res, sigma_max, sigma, b, q, d, rho, eta, gamma, lam,c1, c2, hyper, seed)
+        alpha_grad_vec, alpha_val = calculate_alpha_gradient_vector(sol, resolution, beta_max, alpha_max, alpha_min_res, alpha_max_res, beta_lin, sigma, b, q, d, rho, eta, gamma, lam,c1, c2, hyper, seed)
         
         #Check for any sign changes using our function
         poss_attractors, poss_repellers = return_zeros(alpha_grad_vec,alpha_val)
@@ -152,13 +170,13 @@ def recusive_sing_strat_function(sol, depth, iter_max, resolution, beta_max, alp
                 
         #Rerun the process of finding singular strategies for each of our possible attractors and repellers
         for pair in poss_attractors:
-            temp_attractors, temp_repellers = recusive_sing_strat_function(sol, depth+1, iter_max, resolution, beta_max, alpha_max, pair[0], pair[1], sigma_max, sigma, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed)
+            temp_attractors, temp_repellers = recusive_sing_strat_function(sol, depth+1, iter_max, resolution, beta_max, alpha_max, pair[0], pair[1], beta_lin, sigma, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed)
             
             for val in temp_attractors:
                 attractors.append(val)
                 
         for pair in poss_repellers:
-            temp_attractors, temp_repellers = recusive_sing_strat_function(sol, depth+1, iter_max, resolution, beta_max, alpha_max, pair[0], pair[1], sigma_max, sigma, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed)
+            temp_attractors, temp_repellers = recusive_sing_strat_function(sol, depth+1, iter_max, resolution, beta_max, alpha_max, pair[0], pair[1], beta_lin, sigma, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed)
                 
             for val in temp_repellers:
                 repellers.append(val)
@@ -179,7 +197,7 @@ def produce_suplimentary_data(
     plotting_no_hyper,
     beta_max,
     alpha_max,
-    sigma_max,
+    beta_lin,
     sigma,
     c1,
     c2,
@@ -218,8 +236,8 @@ def produce_suplimentary_data(
         alpha_no_hyper = plotting_sing_strats_no_hyper[no_hyper_ind]
 
         #Calculate associated beta values
-        beta_val = zf.beta_func(beta_max, alpha, alpha_max, sigma, sigma_max, c1, c2)
-        beta_no_hyper = zf.beta_func(beta_max, alpha_no_hyper, alpha_max, sigma, sigma_max, c1, c2)
+        beta_val = beta_func(alpha, alpha_max, beta_max, beta_lin, c1, c2)
+        beta_no_hyper = beta_func(alpha_no_hyper, alpha_max, beta_max, beta_lin, c1, c2)
 
         #Find our populations when hyperparasites are present
         y = sol.eco_steady_state(
@@ -271,26 +289,22 @@ def produce_suplimentary_data(
             
     return death_measure_1, death_measure_2, relative_pop_size, relative_infected_proportion, host_densities, infected_densities, hyperparasite_densities, pop_virulences
 
-def calculate_covergence_stability(sol, attractors, beta_max, alpha_max, sigma_max, sigma, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed, ):
+def calculate_covergence_stability(sol, attractors, beta_max, alpha_max, beta_lin, sigma, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed, ):
     
     convergence_stabilities = []
-    
-    derivative_distance = 1e-1
+    evolutionary_stabilities = []
+    derivative_distance = 1e-2
     
     for alpha_t in attractors:
         alpha = alpha_t - derivative_distance/2
         alpha_2 = alpha_t + derivative_distance/2
         
-        beta = zf.beta_func(beta_max, alpha, alpha_max, sigma, sigma_max, c1, c2)
+        beta = beta_func(alpha, alpha_max, beta_max, beta_lin, c1, c2)
         
-        beta_2 = zf.beta_func(beta_max, alpha_2, alpha_max, sigma, sigma_max, c1, c2)
-        dbetadalpha = zf.dbetadalpha_func(
-            beta_max, alpha, alpha_max, sigma, sigma_max, c1, c2
-        )
+        beta_2 = beta_func(alpha_2, alpha_max, beta_max, beta_lin, c1, c2)
+        dbetadalpha = dbetadalpha_func(alpha, alpha_max, beta_max, beta_lin, c1, c2)
         
-        dbetadalpha_2 = zf.dbetadalpha_func(
-            beta_max, alpha_2, alpha_max, sigma, sigma_max, c1, c2
-        )
+        dbetadalpha_2 = dbetadalpha_func(alpha_2, alpha_max, beta_max, beta_lin, c1, c2)
 
         #Solve the system to ecological steady state
         y = sol.eco_steady_state(
@@ -347,7 +361,9 @@ def calculate_covergence_stability(sol, attractors, beta_max, alpha_max, sigma_m
         dfitdmut = (alpha_grad_mut - alpha_grad)/derivative_distance
         
         convergence_stabilities.append((dfitdmut + dfitdresident))
-    return convergence_stabilities
+        evolutionary_stabilities.append(dfitdmut)
+        
+    return convergence_stabilities, evolutionary_stabilities
 # Parameters for the system we wish to investigate
 rhos = [0.1, 0.5, 0.9]
 # rhos = [0.0, 1.0]
@@ -358,22 +374,33 @@ lams = [0.5, 1, 2.0]
 # rhos = [1.0]
 b = 2.0
 q = 0.1
-d = 0.5
-gamma = 0.5
+d = 0.1
+gamma = 0.1
 # gamma = 1.0
 hyper = 1.0
-c1 = 0.75
-c2 = 2.25
+
+
+#The parameters of the trade-off
+c1 = 1.0
+beta_max = 0.5
+beta_lin = 1.0
+c2 = -60
+
 b_base = 1
 q_base = 1
 
+#The limits of the parameter space for the parasite
+alpha_min = 0.0
 alpha_max = 5
-sigma_max = 4
-beta_max = 5
+# beta_max = 00.5
+
+beta_scalar = 1.0
+
+alpha_init = 3
+sigma_init = 100
 
 sigma_min = 0.0
-sigma_max_range = sigma_max
-
+sigma_max = 0.4
 sigma = sigma_max
 
 iter_max = 3
@@ -383,7 +410,7 @@ resolution = 100
 param_res = 200
 
 seed = 10000
-
+evo_step_size = 2000
 #Initiating the CPP solver
 sol = runner.PySolver()
 
@@ -441,7 +468,7 @@ with open(f"{output_folder}/parameters.txt", "w") as f:
     f.write(f"c2 = {c2}\n")
     f.write(f"beta_max = {beta_max}\n")
     f.write(f"alpha_max = {alpha_max}\n")
-    f.write(f"sigma_max = {sigma_max}\n")
+    f.write(f"beta_lin = {beta_lin}\n")
     f.write(f"resolution = {resolution}\n")
     f.write(f"param_res = {param_res}\n")
     f.write(f"iter_max = {iter_max}\n")
@@ -474,34 +501,18 @@ for i in range(2):
         temp_ax.append(fig1.add_subplot(gs1[i,j]))
     ax1.append(temp_ax)
     
-# for i in range(3):
-#     temp_ax = []
-#     for j in range(len(lams)):
-#         temp_ax.append(fig2.add_subplot(gs2[i,j]))
-#     ax2.append(temp_ax)
     
-for i in range(2):
-    temp_ax = []
-    for j in range(len(lams)):
-        temp_ax.append(fig2.add_subplot(gs2[i,j]))
-    ax2.append(temp_ax)
-    
-    
-sigma_res = [sigma_max*(i/100) for i in range(101)]
+#Performing the simulation in the absence of the hyperparasite to get a baseline
+seed_for_baseline = 10
+rho_baseline = eta_baseline = lam_baseline = 0.0
+sol.alpha_ad_dyn_v4(beta_max, beta_lin, alpha_max, alpha_min, sigma_max, b, q, d, rho_baseline, eta_baseline, gamma, lam_baseline, c1, c2, beta_scalar, 0.0, seed_for_baseline, alpha_init, sigma_init)
 
-for i, val in enumerate(sigma_res):
-    if val >= sigma:
-        sigma_init = i
-        break
-        
-alpha_init = 10
-#We initialise the system with the hyperparasites absent to find the natural ESS of the parasite
-sol.alpha_ad_dyn(beta_max, alpha_max, sigma_max, b, q, d, rho, 0.0, gamma, 0.0, c1, c2, 0.0, seed, alpha_init, sigma_init, H_density = 0.0)
-df = pd.read_csv(f"../data/alpha_evo/data_set{seed}.csv")
+#Reading in the data associated with the baseline simulation
+df_baseline = pd.read_csv(f"../data/alpha_evo/data_set{seed_for_baseline}.csv")
+evo_steps = df_baseline["Evolutionary_step"].values
 
-evo_steps = df["Evolutionary_step"].values
-dft = df[df["Evolutionary_step"]==evo_steps[-1]]
-
+#Calculate the proportion of the population with each trait value
+dft = df_baseline[df_baseline["Evolutionary_step"]==evo_steps[-1]]
 pops = []
 for val in dft["Trait_index_1"].values:
     df_pop = dft[dft["Trait_index_1"]==val][["Density_of_parasite"]]
@@ -516,26 +527,33 @@ alpha_mean = sum(alpha_weights)
 #Rounding this to the closest integer to use as our initial conditions
 alpha_init = round(alpha_mean)
 
-alpha_mean_base = alpha_init*alpha_max/100
-
+#The densities we initiate our populations with, taken from the end of the simulation
+#without the hyperparasite present
 host_density = dft["Density_of_hyperparasite"].iloc[0]
 para_density = sum(dft["Density_of_parasite"].values)
+
+#Initialising the hyperparasites with a low density
 hyper_density = 0.1
 
+    
+for i in range(2):
+    temp_ax = []
+    for j in range(len(lams)):
+        temp_ax.append(fig2.add_subplot(gs2[i,j]))
+    ax2.append(temp_ax)
+    
 #Here we loop through our different values of eta, rho and lambda. The lam_tracker allows us to access
 #the correct figure at the same time
 for lam_tracker, lam in enumerate(lams):
     for rho in rhos:
         
-
 #         iter_max = 2
 #         res_scalar = 4
 #         depth_max = iter_max
 #         resolution = 100
 
         beta_max = beta_max
-        alpha_max_param = alpha_max 
-        sigma_max_param = sigma_max
+        alpha_max_param = alpha_max
 
         param_res = 200
 
@@ -564,15 +582,15 @@ for lam_tracker, lam in enumerate(lams):
             alpha_max_res = alpha_max
             alpha_min_res = 0.0
 
-            alpha_grad_vec, alpha_val = calculate_alpha_gradient_vector(sol, resolution, beta_max, alpha_max, alpha_min_res, alpha_max_res, sigma_max, sigma, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed)
+            alpha_grad_vec, alpha_val = calculate_alpha_gradient_vector(sol, resolution, beta_max, alpha_max, alpha_min_res, alpha_max_res, beta_lin, sigma, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed)
 
 
-            alpha_grad_no_hyper_vec, alpha_val = calculate_alpha_gradient_vector(sol, resolution, beta_max, alpha_max, alpha_min_res, alpha_max_res, sigma_max, sigma, b, q, d, rho, eta, gamma, lam, c1, c2, 0.0, seed)
+            alpha_grad_no_hyper_vec, alpha_val = calculate_alpha_gradient_vector(sol, resolution, beta_max, alpha_max, alpha_min_res, alpha_max_res, beta_lin, sigma, b, q, d, rho, eta, gamma, lam, c1, c2, 0.0, seed)
 
             #Calculating the singular strategies when the hyperparasite is present and absent
-            attractors_hyper, repellers_hyper = recusive_sing_strat_function(sol, 0, iter_max, resolution, beta_max, alpha_max, alpha_min_res, alpha_max_res, sigma_max, sigma, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed)
+            attractors_hyper, repellers_hyper = recusive_sing_strat_function(sol, 0, iter_max, resolution, beta_max, alpha_max, alpha_min_res, alpha_max_res, beta_lin, sigma, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed)
 
-            attractors_no_hyper, repellers_no_hyper = recusive_sing_strat_function(sol, 0, iter_max, resolution, beta_max, alpha_max, alpha_min_res, alpha_max_res, sigma_max, sigma, b, q, d, rho, eta, gamma, lam, c1, c2, 0.0, seed)
+            attractors_no_hyper, repellers_no_hyper = recusive_sing_strat_function(sol, 0, iter_max, resolution, beta_max, alpha_max, alpha_min_res, alpha_max_res, beta_lin, sigma, b, q, d, rho, eta, gamma, lam, c1, c2, 0.0, seed)
 
             #Storing these values in our lists from before
             for val in attractors_hyper:
@@ -620,7 +638,7 @@ for lam_tracker, lam in enumerate(lams):
 #             plotting_etas_attractors_no_hyper,
 #             beta_max,
 #             alpha_max,
-#             sigma_max,
+#             beta_lin,
 #             sigma,
 #             c1,
 #             c2,
@@ -642,7 +660,7 @@ for lam_tracker, lam in enumerate(lams):
 #             plotting_etas_attractors_no_hyper,
 #             beta_max,
 #             alpha_max,
-#             sigma_max,
+#             beta_lin,
 #             sigma,
 #             c1,
 #             c2,
@@ -768,29 +786,28 @@ for lam_tracker, lam in enumerate(lams):
             eta_attractors[rho]['1'] = temp_etas_1
             eta_attractors[rho]['2'] = temp_etas_2
             
-            temp_convergences_1 = calculate_covergence_stability(sol, temp_attractors_1, beta_max, alpha_max, sigma_max, sigma, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed)
-            temp_convergences_2 = calculate_covergence_stability(sol, temp_attractors_2, beta_max, alpha_max, sigma_max, sigma, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed)
+            temp_convergences_1, temp_evolutions_1 = calculate_covergence_stability(sol, temp_attractors_1, beta_max, alpha_max, beta_lin, sigma, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed)
+            temp_convergences_2, temp_evolutions_2 = calculate_covergence_stability(sol, temp_attractors_2, beta_max, alpha_max, beta_lin, sigma, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed)
             
             for i, val in enumerate(temp_convergences_1):
-                if val > 0:
+                if val < 0 and temp_evolutions_1[i] > 0:
                     print(val, temp_etas_1[i], temp_attractors_1[i], seed, "type 1")
                     j = 0
                     while ((j/100)*alpha_max < temp_attractors_1[i]):
                         j += 1
                     j += -1
-                    sol.alpha_ad_dyn(beta_max, alpha_max, sigma_max, b, q, d, rho, temp_etas_1[i], gamma, lam, c1, c2, hyper, seed, j, sigma_init, S_density = host_density, I_density = para_density, H_density = hyper_density)
+                    sol.alpha_ad_dyn_v4(beta_max, beta_lin, alpha_max, alpha_min, sigma_max, b, q, d, rho, temp_etas_1[i], gamma, lam, c1, c2, beta_scalar, hyper, seed, j, sigma_init, evo_step_size, S_density = host_density, I_density = para_density, H_density = hyper_density)
                     seed += 1
                     
             for i, val in enumerate(temp_convergences_2):
-                if val > 0:
+                if val < 0 and temp_evolutions_2[i] > 0:
                     print(val, temp_etas_2[i], temp_attractors_2[i], seed, "type 2")
                     j = 0
                     while ((j/100)*alpha_max < temp_attractors_2[i]):
                         j += 1
                     j += -1
-                    sol.alpha_ad_dyn(beta_max, alpha_max, sigma_max, b, q, d, rho, temp_etas_2[i], gamma, lam, c1, c2, hyper, seed, j, sigma_init, S_density = host_density, I_density = para_density, H_density = hyper_density)
+                    sol.alpha_ad_dyn_v4(beta_max, beta_lin, alpha_max, alpha_min, sigma_max, b, q, d, rho, temp_etas_2[i], gamma, lam, c1, c2, beta_scalar, hyper, seed, j, sigma_init, evo_step_size, S_density = host_density, I_density = para_density, H_density = hyper_density)
                     seed += 1
-                    
             #We calculate the ecological consequences of the introduction of a hyperparasite
             plotting_dict_deaths_1[rho]["1"], plotting_dict_deaths_2[rho]["1"], plotting_dict_pops[rho]["1"], plotting_dict_inf[rho]["1"], host_density_attractor, para_density_attractor, plotting_dict_hypers[rho]["1"], plotting_dict_pop_virulences[rho]["1"] = produce_suplimentary_data(
             sol,
@@ -800,7 +817,7 @@ for lam_tracker, lam in enumerate(lams):
             plotting_etas_attractors_no_hyper,
             beta_max,
             alpha_max,
-            sigma_max,
+            beta_lin,
             sigma,
             c1,
             c2,
@@ -822,7 +839,7 @@ for lam_tracker, lam in enumerate(lams):
             plotting_etas_attractors_no_hyper,
             beta_max,
             alpha_max,
-            sigma_max,
+            beta_lin,
             sigma,
             c1,
             c2,
@@ -847,7 +864,7 @@ for lam_tracker, lam in enumerate(lams):
             plotting_etas_attractors_no_hyper,
             beta_max,
             alpha_max,
-            sigma_max,
+            beta_lin,
             sigma,
             c1,
             c2,

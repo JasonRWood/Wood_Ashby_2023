@@ -33,12 +33,12 @@ beta_scalar = 1.0
 rho = 0.5
 
 #The specific values of eta and lambda chosen for this plot
-eta = 0.25
-lam = 5.0
+eta = 0.15
+lam = 1.0
 
 #The seed used to track the simulation, and the number of evolutionary steps
 seed = 10000
-evo_step_size = 2000
+evo_step_size = 4000
 
 #The limits of the parameter space for the parasite
 alpha_min = 0.0
@@ -201,7 +201,7 @@ ax[0].scatter(alpha_vals_pre_branch, evo_steps_pre_branch_sim)
 ax[0].scatter(alpha_branch_1, evo_steps_branch_1)
 ax[0].scatter(alpha_branch_2, evo_steps_branch_2)
 ax[0].plot(alpha_means, evo_plotting_mean, "k--")
-ax[0].set_xlim([0,2])
+ax[0].set_xlim([0,alpha_max])
 ax[0].set_ylim([0, max(evo_steps)])
 ax[0].set_xlabel(r"Parasite virulence, $\alpha$", fontsize = 12)
 ax[0].set_ylabel("Evolutionary Time", fontsize = 12)

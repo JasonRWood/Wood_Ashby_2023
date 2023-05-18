@@ -1128,6 +1128,12 @@ namespace solvers{
                 y[2] = 0.0;
             }
             
+//             if (y[2] <= TINY){
+//                 y[2] = 0.0;
+//             }
+//             if (y[1] <= TINY && rho == 1.0){
+//                 y[1] = 0.0;
+//             }
 
             if (y[1] == 0.0 && y[2] == 0.0 && hyper > 0.0 && flag){
                 flag = false;
