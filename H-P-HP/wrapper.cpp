@@ -1062,7 +1062,7 @@ namespace solvers{
         return 0;
     }
 
-    void Quick_solver::eco_dynamics(float* S, float* I, float* H,float beta_value, float alpha_value, float sigma_value, float b, float q, float d, float rho, float eta, float gamma, float lambda, float c1, float c2, float hyper, int seed, float S_density, float I_density, float H_density){
+    void Quick_solver::eco_dynamics(float* S, float* I, float* H,int* exit_flag, float beta_value, float alpha_value, float sigma_value, float b, float q, float d, float rho, float eta, float gamma, float lambda, float c1, float c2, float hyper, int seed, float S_density, float I_density, float H_density){
 
         float y[3], yScale[3], dydt[3], discrepancy[1], discrep_check;
         float t[1], tcheck[1], tmax = 4000, h[1], hnext[1];
@@ -1163,7 +1163,7 @@ namespace solvers{
                     }
                 }
 
-                if (discrep_check >= TINY || check_flag){
+                if (discrep_check >= 10*TINY || check_flag){
                     y_check_sum = 0.0;
 
                     tcheck[0] = t[0];
@@ -1174,8 +1174,10 @@ namespace solvers{
                         y_max_next[i] = y[i];
                         y_min_next[i] = y[i];
                     }
+                    exit_flag[0] = 0;
                 }
                 else{
+                    exit_flag[0] = 1;
                     t[0] = tmax + 1.0;;
                 }
             }

@@ -45,9 +45,9 @@ cdef class PySolver:
     def eco_steady_state(self, float beta_value, float alpha_value, float sigma_value, float b, float q, float d, float rho, float eta, float gamma, float lam, float c1, float c2, float hyper, int seed, float S_density = 4.0, float I_density = 4.0, float H_density = 4.0):
         
         cdef float s, i, h,
+        cdef int exit_flag
+        self.cpp_solver.eco_dynamics(&s, &i, &h, &exit_flag, beta_value, alpha_value, sigma_value, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed, S_density, I_density, H_density)
         
-        self.cpp_solver.eco_dynamics(&s, &i, &h, beta_value, alpha_value, sigma_value, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed, S_density, I_density, H_density)
-        
-        y = [s,i,h]
+        y = [s,i,h, exit_flag]
         
         return y

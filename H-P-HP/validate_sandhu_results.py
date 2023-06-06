@@ -79,11 +79,13 @@ for i in range(1):
         temp_ax.append(fig1.add_subplot(gs1[i,j]))
     ax1.append(temp_ax)
     
+titles = ["Hypovirulence ", "No effect on virulence ", "Hypervirulence "]
+
 for ind, lam in enumerate(lams):
     simulated_alphas = []
     for eta in etas:
 #         print(eta, lam)
-#         sol.alpha_ad_dyn(beta_max, alpha_max, sigma_max, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed, alpha_init, sigma_init, S_density = host_density, I_density = para_density, H_density = hyper_density)
+        sol.alpha_ad_dyn(beta_max, alpha_max, sigma_max, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed, alpha_init, sigma_init, S_density = host_density, I_density = para_density, H_density = hyper_density)
         df = pd.read_csv(f"../data/alpha_evo/data_set{seed}.csv")
 
         seed += 1
@@ -115,6 +117,7 @@ for ind, lam in enumerate(lams):
     ax1[0][ind].plot(etas, [alpha_mean_base for eta in etas])
     ax1[0][ind].tick_params(axis='both', which='major', labelsize=34)
     ax1[0][ind].set_ylim([0,alpha_max])
+    ax1[0][ind].set_title(fr"{titles[ind]}($\lambda$ = {lam})", fontsize = 34)
 
 ax1[0][1].set_xlabel(r"Hyperparasite Infectivity Modifier, $\eta$", fontsize = 34)    
 ax1[0][0].set_ylabel(r"Evolved Virulence, $\alpha$", fontsize = 34)

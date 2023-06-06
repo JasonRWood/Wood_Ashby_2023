@@ -1279,6 +1279,9 @@ static void __Pyx_CppExn2PyErr() {
 static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *);
 
 /* CIntToPy.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
+
+/* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
 /* CIntFromPy.proto */
@@ -3353,6 +3356,7 @@ static PyObject *__pyx_pf_6runner_8PySolver_12eco_steady_state(struct __pyx_obj_
   float __pyx_v_s;
   float __pyx_v_i;
   float __pyx_v_h;
+  int __pyx_v_exit_flag;
   PyObject *__pyx_v_y = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -3360,6 +3364,7 @@ static PyObject *__pyx_pf_6runner_8PySolver_12eco_steady_state(struct __pyx_obj_
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
   PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_5 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -3367,17 +3372,17 @@ static PyObject *__pyx_pf_6runner_8PySolver_12eco_steady_state(struct __pyx_obj_
 
   /* "runner.pyx":49
  *         cdef float s, i, h,
+ *         cdef int exit_flag
+ *         self.cpp_solver.eco_dynamics(&s, &i, &h, &exit_flag, beta_value, alpha_value, sigma_value, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed, S_density, I_density, H_density)             # <<<<<<<<<<<<<<
  * 
- *         self.cpp_solver.eco_dynamics(&s, &i, &h, beta_value, alpha_value, sigma_value, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed, S_density, I_density, H_density)             # <<<<<<<<<<<<<<
- * 
- *         y = [s,i,h]
+ *         y = [s,i,h, exit_flag]
  */
-  __pyx_v_self->cpp_solver.eco_dynamics((&__pyx_v_s), (&__pyx_v_i), (&__pyx_v_h), __pyx_v_beta_value, __pyx_v_alpha_value, __pyx_v_sigma_value, __pyx_v_b, __pyx_v_q, __pyx_v_d, __pyx_v_rho, __pyx_v_eta, __pyx_v_gamma, __pyx_v_lam, __pyx_v_c1, __pyx_v_c2, __pyx_v_hyper, __pyx_v_seed, __pyx_v_S_density, __pyx_v_I_density, __pyx_v_H_density);
+  __pyx_v_self->cpp_solver.eco_dynamics((&__pyx_v_s), (&__pyx_v_i), (&__pyx_v_h), (&__pyx_v_exit_flag), __pyx_v_beta_value, __pyx_v_alpha_value, __pyx_v_sigma_value, __pyx_v_b, __pyx_v_q, __pyx_v_d, __pyx_v_rho, __pyx_v_eta, __pyx_v_gamma, __pyx_v_lam, __pyx_v_c1, __pyx_v_c2, __pyx_v_hyper, __pyx_v_seed, __pyx_v_S_density, __pyx_v_I_density, __pyx_v_H_density);
 
   /* "runner.pyx":51
- *         self.cpp_solver.eco_dynamics(&s, &i, &h, beta_value, alpha_value, sigma_value, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed, S_density, I_density, H_density)
+ *         self.cpp_solver.eco_dynamics(&s, &i, &h, &exit_flag, beta_value, alpha_value, sigma_value, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed, S_density, I_density, H_density)
  * 
- *         y = [s,i,h]             # <<<<<<<<<<<<<<
+ *         y = [s,i,h, exit_flag]             # <<<<<<<<<<<<<<
  * 
  *         return y
  */
@@ -3387,22 +3392,27 @@ static PyObject *__pyx_pf_6runner_8PySolver_12eco_steady_state(struct __pyx_obj_
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = PyFloat_FromDouble(__pyx_v_h); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 51, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyList_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 51, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_exit_flag); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 51, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_5 = PyList_New(4); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 51, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_1);
-  PyList_SET_ITEM(__pyx_t_4, 0, __pyx_t_1);
+  PyList_SET_ITEM(__pyx_t_5, 0, __pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_2);
-  PyList_SET_ITEM(__pyx_t_4, 1, __pyx_t_2);
+  PyList_SET_ITEM(__pyx_t_5, 1, __pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_3);
-  PyList_SET_ITEM(__pyx_t_4, 2, __pyx_t_3);
+  PyList_SET_ITEM(__pyx_t_5, 2, __pyx_t_3);
+  __Pyx_GIVEREF(__pyx_t_4);
+  PyList_SET_ITEM(__pyx_t_5, 3, __pyx_t_4);
   __pyx_t_1 = 0;
   __pyx_t_2 = 0;
   __pyx_t_3 = 0;
-  __pyx_v_y = ((PyObject*)__pyx_t_4);
   __pyx_t_4 = 0;
+  __pyx_v_y = ((PyObject*)__pyx_t_5);
+  __pyx_t_5 = 0;
 
   /* "runner.pyx":53
- *         y = [s,i,h]
+ *         y = [s,i,h, exit_flag]
  * 
  *         return y             # <<<<<<<<<<<<<<
  */
@@ -3425,6 +3435,7 @@ static PyObject *__pyx_pf_6runner_8PySolver_12eco_steady_state(struct __pyx_obj_
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
   __Pyx_AddTraceback("runner.PySolver.eco_steady_state", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -5208,6 +5219,44 @@ raise_neg_overflow:
     PyErr_SetString(PyExc_OverflowError,
         "can't convert negative value to int");
     return (int) -1;
+}
+
+/* CIntToPy */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
+#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#endif
+    const int neg_one = (int) -1, const_zero = (int) 0;
+#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
+#pragma GCC diagnostic pop
+#endif
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(int) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(int) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(int) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+#endif
+        }
+    } else {
+        if (sizeof(int) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(int) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+#endif
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(int),
+                                     little, !is_unsigned);
+    }
 }
 
 /* CIntToPy */

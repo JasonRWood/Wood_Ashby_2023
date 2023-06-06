@@ -84,7 +84,10 @@ def calculate_alpha_gradient_vector(sol, resolution, beta_max, alpha_max, alpha_
         S = y[0]
         I = y[1]
         H = y[2]
-
+        
+        if y[3] != 1:
+            print(S, I, H, rho, lam, eta, alpha)
+            raise Exception("Solver did not exit early due to convergence")
         #Determine which version of the gradient we need. If the parasite is extinct just add an
         #arbitrary value
         if (I == 0 and H == 0):
@@ -430,6 +433,7 @@ plotting_dict_inf = {}
 plotting_dict_hosts = {}
 plotting_dict_paras = {}
 plotting_dict_hypers = {}
+plotting_dict_hyper_prop = {}
 plotting_dict_pop_virulences = {}
 #Creating lists to add plots to for the legend
 labels_base = []
@@ -483,7 +487,7 @@ gs1 = fig1.add_gridspec(2,len(lams))
 ax1 = []
 
 #And one for the ecological consequences
-fig2 = plt.figure(figsize = (40, 33))
+fig2 = plt.figure(figsize = (40, 22))
 # gs2 = fig2.add_gridspec(3,len(lams))
 gs2 = fig2.add_gridspec(2,len(lams))
 ax2 = []
@@ -693,6 +697,7 @@ for lam_tracker, lam in enumerate(lams):
         plotting_dict_hosts[rho] = {}
         plotting_dict_paras[rho] = {}
         plotting_dict_hypers[rho] = {}
+        plotting_dict_hyper_prop[rho] = {}
         plotting_dict_pop_virulences[rho] = {}
         
 #         plotting_dict_hosts[rho]["a"] = host_density_attractor
@@ -706,7 +711,7 @@ for lam_tracker, lam in enumerate(lams):
 
                         
 
-    xlabel = r"Hyperparasite infectivity modifier, $\eta$"
+    xlabel = r"Hyperparasite Transmission Modifier, $\eta$"
     colours = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:gray"]
 
     
@@ -830,6 +835,11 @@ for lam_tracker, lam in enumerate(lams):
             hyper,
             seed,
           )
+            temp_list_hyper_prop = []
+            for i, val in enumerate(para_density_attractor):
+                H = plotting_dict_hypers[rho]["1"][i]
+                temp_list_hyper_prop.append(H/(H + val))
+            plotting_dict_hyper_prop[rho]["1"] = temp_list_hyper_prop
             
             plotting_dict_deaths_1[rho]["2"], plotting_dict_deaths_2[rho]["2"], plotting_dict_pops[rho]["2"], plotting_dict_inf[rho]["2"], host_density_attractor, para_density_attractor, plotting_dict_hypers[rho]["2"], plotting_dict_pop_virulences[rho]["2"] = produce_suplimentary_data(
             sol,
@@ -852,6 +862,11 @@ for lam_tracker, lam in enumerate(lams):
             hyper,
             seed,
           )
+            temp_list_hyper_prop = []
+            for i, val in enumerate(para_density_attractor):
+                H = plotting_dict_hypers[rho]["2"][i]
+                temp_list_hyper_prop.append(H/(H + val))
+            plotting_dict_hyper_prop[rho]["2"] = temp_list_hyper_prop
         else:
             alpha_attractors[rho]['1'] = plotting_dict_attractors[rho]
             eta_attractors[rho]['1'] = plotting_dict_hyper[rho]["a"]
@@ -877,12 +892,19 @@ for lam_tracker, lam in enumerate(lams):
             hyper,
             seed,
           )
+            temp_list_hyper_prop = []
+            for i, val in enumerate(para_density_attractor):
+                H = plotting_dict_hypers[rho]["1"][i]
+                temp_list_hyper_prop.append(H/(H + val))
+            plotting_dict_hyper_prop[rho]["1"] = temp_list_hyper_prop
+            
             plotting_dict_deaths_1[rho]["2"] = []
             plotting_dict_deaths_2[rho]["2"] = []
             plotting_dict_pops[rho]["2"] = []
             plotting_dict_inf[rho]["2"] = []
             plotting_dict_hypers[rho]["2"] = []
             plotting_dict_pop_virulences[rho]["2"] = []
+            plotting_dict_hyper_prop[rho]["2"] = []
     #Here we do 3 dummy plots to create the legend we will use later
     for i, rho in enumerate(rhos):
         if lam_tracker == 0:
@@ -963,14 +985,13 @@ for lam_tracker, lam in enumerate(lams):
 
     ax1[0][lam_tracker].plot(plotting_dict_no_hyper[rho]["a"],plotting_dict_attractors_no_hyper[rho], c = "k")
     ax1[0][lam_tracker].plot(plotting_dict_no_hyper[rho]["r"],plotting_dict_repellers_no_hyper[rho], c = "k")
-#     ax1[0][lam_tracker].text(0.05,1.01,texts[0][lam_tracker], transform=ax1[0][lam_tracker].transAxes, fontsize = 30)
+    ax1[0][lam_tracker].text(0.05,1.01,texts[0][lam_tracker], transform=ax1[0][lam_tracker].transAxes, fontsize = 30)
     
     ax1[0][lam_tracker].set_xlabel("", fontsize = 0)
     ax1[0][lam_tracker].set_ylim([0, 1.1*alpha_max_res])
     ax1[0][lam_tracker].tick_params(axis='both', which='major', labelsize=34)
     if lam_tracker == 0:
         ax1[0][lam_tracker].set_ylabel(r"Evolved virulence, $\alpha$", fontsize = 34)
-        ax1[1][lam_tracker].set_ylabel("Population Level Virulence", fontsize = 34)
     ax1[0][lam_tracker].set_title(fr"{titles[lam_tracker]}($\lambda$ = {lam})", fontsize = 34)
     
     
@@ -1011,8 +1032,8 @@ for lam_tracker, lam in enumerate(lams):
 
     
     ax2[0][lam_tracker].set_xlabel("", fontsize = 0)
-    ax2[0][lam_tracker].set_ylim([0.8, 3.2])
-#     ax2[0][lam_tracker].text(0.05,1.01,texts[0][lam_tracker], transform=ax2[0][lam_tracker].transAxes, fontsize = 30)
+#     ax2[0][lam_tracker].set_ylim([0.8, 3.2])
+    ax2[0][lam_tracker].text(0.05,1.01,texts[0][lam_tracker], transform=ax2[0][lam_tracker].transAxes, fontsize = 30)
     ax2[0][lam_tracker].tick_params(axis='both', which='major', labelsize=34)
     if lam_tracker == 0:
         ax2[0][lam_tracker].set_ylabel("Relative Infected Mortality", fontsize = 34)
@@ -1036,40 +1057,54 @@ for lam_tracker, lam in enumerate(lams):
     ax2[1][lam_tracker].plot(plotting_dict_hyper[rho]["r"], [1 for val in plotting_dict_hyper[rho]["r"]], c = "k")
 
 
-#     if lam_tracker == 1:
-#         ax2[1][lam_tracker].set_xlabel(xlabel, fontsize = 34)
-#     else:
-#         ax2[1][lam_tracker].set_xlabel("", fontsize = 0)
+    if lam_tracker == 1:
+        ax2[1][lam_tracker].set_xlabel(xlabel, fontsize = 34)
+    else:
+        ax2[1][lam_tracker].set_xlabel("", fontsize = 0)
         
-    ax2[1][lam_tracker].set_ylim([0.3, 1.5])
+#     ax2[1][lam_tracker].set_ylim([0.3, 1.5])
     ax2[1][lam_tracker].tick_params(axis='both', which='major', labelsize=34)
-#     ax2[1][lam_tracker].text(0.05,1.01,texts[1][lam_tracker], transform=ax2[1][lam_tracker].transAxes, fontsize = 30)
+    ax2[1][lam_tracker].text(0.05,1.01,texts[1][lam_tracker], transform=ax2[1][lam_tracker].transAxes, fontsize = 30)
     
     if lam_tracker == 0:
         ax2[1][lam_tracker].set_ylabel("Relative Population Size", fontsize = 34)
     
+#     for i, rho in enumerate(rhos):
+#         ax1[1][lam_tracker].plot(eta_attractors[rho]['1'], plotting_dict_hypers[rho]["1"], c = f"{colours[i]}")
+#         ax1[1][lam_tracker].plot(eta_attractors[rho]['2'], plotting_dict_hypers[rho]["2"], c = f"{colours[i]}")
+#         ax1[1][lam_tracker].scatter(eta_attractors[rho]['1'][0], plotting_dict_hypers[rho]['1'][0], edgecolors = f"{colours[i]}", marker = "o", facecolors="none", s = 200)
+#         ax1[1][lam_tracker].scatter(eta_attractors[rho]['1'][-1], plotting_dict_hypers[rho]['1'][-1], edgecolors = f"{colours[i]}", marker = "o", facecolors= f"{colours[i]}", s = 200)
+#         try:
+#             ax1[1][lam_tracker].scatter(eta_attractors[rho]['2'][-1], plotting_dict_hypers[rho]['2'][-1], edgecolors = f"{colours[i]}", marker = "s", facecolors= f"{colours[i]}", s = 200)
+#             ax1[1][lam_tracker].scatter(eta_attractors[rho]['2'][0], plotting_dict_hypers[rho]['2'][0], edgecolors = f"{colours[i]}", marker = "s", facecolors="none", s = 200)
+#         except:
+#             pass
+    
+#     if lam_tracker == 0:
+#         ax1[1][lam_tracker].set_ylabel("Density of Hyperparasitised Hosts", fontsize = 34)
+        
     for i, rho in enumerate(rhos):
-        ax1[1][lam_tracker].plot(eta_attractors[rho]['1'], plotting_dict_hypers[rho]["1"], c = f"{colours[i]}")
-        ax1[1][lam_tracker].plot(eta_attractors[rho]['2'], plotting_dict_hypers[rho]["2"], c = f"{colours[i]}")
-        ax1[1][lam_tracker].scatter(eta_attractors[rho]['1'][0], plotting_dict_hypers[rho]['1'][0], edgecolors = f"{colours[i]}", marker = "o", facecolors="none", s = 200)
-        ax1[1][lam_tracker].scatter(eta_attractors[rho]['1'][-1], plotting_dict_hypers[rho]['1'][-1], edgecolors = f"{colours[i]}", marker = "o", facecolors= f"{colours[i]}", s = 200)
+        ax1[1][lam_tracker].plot(eta_attractors[rho]['1'], plotting_dict_hyper_prop[rho]["1"], c = f"{colours[i]}")
+        ax1[1][lam_tracker].plot(eta_attractors[rho]['2'], plotting_dict_hyper_prop[rho]["2"], c = f"{colours[i]}")
+        ax1[1][lam_tracker].scatter(eta_attractors[rho]['1'][0], plotting_dict_hyper_prop[rho]['1'][0], edgecolors = f"{colours[i]}", marker = "o", facecolors="none", s = 200)
+        ax1[1][lam_tracker].scatter(eta_attractors[rho]['1'][-1], plotting_dict_hyper_prop[rho]['1'][-1], edgecolors = f"{colours[i]}", marker = "o", facecolors= f"{colours[i]}", s = 200)
         try:
-            ax1[1][lam_tracker].scatter(eta_attractors[rho]['2'][-1], plotting_dict_hypers[rho]['2'][-1], edgecolors = f"{colours[i]}", marker = "s", facecolors= f"{colours[i]}", s = 200)
-            ax1[1][lam_tracker].scatter(eta_attractors[rho]['2'][0], plotting_dict_hypers[rho]['2'][0], edgecolors = f"{colours[i]}", marker = "s", facecolors="none", s = 200)
+            ax1[1][lam_tracker].scatter(eta_attractors[rho]['2'][-1], plotting_dict_hyper_prop[rho]['2'][-1], edgecolors = f"{colours[i]}", marker = "s", facecolors= f"{colours[i]}", s = 200)
+            ax1[1][lam_tracker].scatter(eta_attractors[rho]['2'][0], plotting_dict_hyper_prop[rho]['2'][0], edgecolors = f"{colours[i]}", marker = "s", facecolors="none", s = 200)
         except:
             pass
-    
-    if lam_tracker == 0:
-        ax1[1][lam_tracker].set_ylabel("Density of Hyperparasitised Hosts", fontsize = 34)
         
-    
+    if lam_tracker == 0:
+        ax1[1][lam_tracker].set_ylabel("Proportion of Hyperparasitised Parasites", fontsize = 34)
+        
     if lam_tracker == 1:
         ax1[1][lam_tracker].set_xlabel(xlabel, fontsize = 34)
     else:
         ax1[1][lam_tracker].set_xlabel("", fontsize = 0)
     ax1[1][lam_tracker]
     ax1[1][lam_tracker].tick_params(axis='both', which='major', labelsize=34)
-#     ax2[2][lam_tracker].text(0.05,1.01,texts[2][lam_tracker], transform=ax2[2][lam_tracker].transAxes, fontsize = 30)
+#     ax1[1][lam_tracker].text(0.05,1.01,texts[1][lam_tracker], transform=ax2[1][lam_tracker].transAxes, fontsize = 30)
+    ax1[1][lam_tracker].text(0.05,1.01,texts[1][lam_tracker], transform=ax1[1][lam_tracker].transAxes, fontsize = 30)
 #After this we save the figures in the appropriate folder
 
 fig2.legend(lines2,

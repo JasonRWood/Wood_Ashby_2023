@@ -6,7 +6,7 @@ cdef extern from "wrapper.h" namespace "solvers":
         Quick_solver() except +
         Quick_solver(float, float, float, float, float, float, float, float, float, float, float, float, float, int) except +
         int ad_dyn(float, float, float, float, float, float, float, float, float, float, float, float, float, int, int, int)
-        void eco_dynamics(float*, float*, float*, float, float, float, float, float, float, float, float, float, float, float, float, float, int, float, float, float)
+        void eco_dynamics(float*, float*, float*, int*, float, float, float, float, float, float, float, float, float, float, float, float, float, int, float, float, float)
         void alpha_evo_only(float, float, float, float, float, float, float, float, float, float, float, float, float, int, int, int, float, float, float)
         void alpha_evo_only_v2(float, float, float, float, float, float, float, float, float, float, float, float, float, float, float, float, int, int, int, float, float, float)
         void alpha_evo_only_v3(float, float, float, float, float, float, float, float, float, float, float, float, float, int, int, int, float, float, float)
