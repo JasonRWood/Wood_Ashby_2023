@@ -414,7 +414,7 @@ for i in range(len(etas)):
 colours = {0.5:"black", 0.2:"blue", 1.0:"red"}
 
 #Creating and saving the figure
-fig, ax = plt.subplots(figsize = (10, 15))
+fig, ax = plt.subplots(figsize = (8, 12))
 left, bottom, width, height = [.35, 0.7, 0.5, 0.15]
 ax_new = fig.add_axes([left, bottom, width, height])
     
@@ -465,7 +465,7 @@ fig.legend(
    loc="upper right",
    bbox_to_anchor=(0.5,0.5)
 )
-ax.set_xlabel(r"Parasite virulence, $\alpha$", fontsize = 28)
+ax.set_xlabel(r"Intrinsic virulence, $\alpha$", fontsize = 28)
 ax.set_xlim([0,3])
 ax.set_ylabel("Evolutionary Time", fontsize = 28)
 

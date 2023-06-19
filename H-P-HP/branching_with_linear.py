@@ -199,10 +199,10 @@ alpha_means = [alpha_mean for i in range(evo_steps_2[-1]+1)]
 evo_plotting_mean = [i for i in range(evo_steps_2[-1]+1)]
 
 #Creating the figures
-fig = plt.figure(figsize = (10, 13))
-plt.subplots_adjust(wspace=0.25, hspace = 0.5)
-gs = fig.add_gridspec(4,2)
-ax = [fig.add_subplot(gs[:, 0]), fig.add_subplot(gs[0,1]), fig.add_subplot(gs[1,1]), fig.add_subplot(gs[2,1]), fig.add_subplot(gs[3,1])]
+fig = plt.figure(figsize = (10, 20))
+plt.subplots_adjust(wspace=0.25, hspace = 0.1)
+gs = fig.add_gridspec(2,3)
+ax = [fig.add_subplot(gs[:, 0]), fig.add_subplot(gs[0,1]), fig.add_subplot(gs[0,2]), fig.add_subplot(gs[1,1]), fig.add_subplot(gs[1,2])]
 
 ax[0].scatter(alpha_vals_pre_branch, evo_steps_pre_branch_sim)
 ax[0].scatter(alpha_branch_1, evo_steps_branch_1)
@@ -210,13 +210,14 @@ ax[0].scatter(alpha_branch_2, evo_steps_branch_2)
 ax[0].plot(alpha_means, evo_plotting_mean, "k--")
 ax[0].set_xlim([0,alpha_max])
 ax[0].set_ylim([0, max(evo_steps)])
-ax[0].set_xlabel(r"Parasite virulence, $\alpha$", fontsize = 20)
+ax[0].set_xlabel(r"Intrinsic virulence, $\alpha$", fontsize = 20)
 ax[0].set_ylabel("Evolutionary Time", fontsize = 20)
 ax[0].text(0.02,1.01,panel_labels[0], transform=ax[0].transAxes, fontsize = 14)
 
 ax[1].plot(evo_steps_unique, S_vals)
 ax[1].plot(evo_plotting_mean, host_density, "k--")
-ax[1].set_title("Population Densities", fontsize = 17)
+# ax[1].set_title("Population Densities", fontsize = 17)
+ax[1].set_xticks([0,1000,2000,3000,4000])
 ax[1].set_xlim([0, max(evo_steps)])
 ax[1].set_ylim([0, 2])
 ax[1].set_ylabel(r"Susceptible Hosts", fontsize = 14)
@@ -226,6 +227,7 @@ max_I_values = [max(I_vals_pre_branch), max(I_branch_1), max(I_branch_2)]
 max_H_values = [max(H_vals_pre_branch), max(H_branch_1), max(H_branch_2)]
 ax[2].plot(evo_steps_pre_branch, I_vals_pre_branch)
 ax[2].plot(evo_plotting_mean, para_density, "k--")
+ax[2].set_xticks([0,1000,2000,3000,4000])
 ax[2].plot(evo_steps_post_branch, I_branch_1)
 ax[2].plot(evo_steps_post_branch, I_branch_2)
 ax[2].plot(evo_steps_post_branch, I_post_branch_total, "C0--")
@@ -235,6 +237,7 @@ ax[2].set_ylabel(r"Parasitised Hosts", fontsize = 14)
 ax[2].text(0.02,1.05,panel_labels[2], transform=ax[2].transAxes, fontsize = 14)
 
 ax[3].plot(evo_steps_pre_branch, H_vals_pre_branch)
+ax[3].set_xticks([0,1000,2000,3000,4000])
 ax[3].plot(evo_steps_post_branch, H_branch_1)
 ax[3].plot(evo_steps_post_branch, H_branch_2)
 ax[3].plot(evo_steps_post_branch, H_post_branch_total, "C0--")
@@ -245,11 +248,12 @@ ax[3].set_ylabel(r"Hyperparasitised Hosts", fontsize = 14)
 ax[3].text(0.02,1.05,panel_labels[3], transform=ax[3].transAxes, fontsize = 14)
 
 ax[4].plot(evo_steps_pre_branch, total_pre_branch)
+ax[4].set_xticks([0,1000,2000,3000,4000])
 ax[4].plot(evo_steps_post_branch, total_post_branch, "C0--")
 ax[4].plot([evo_steps_2[0], evo_steps_2[-1]], [host_density[-1] + para_density[-1], host_density[-1] + para_density[-1]], "k--")
 ax[4].set_ylabel("Total Host Density", fontsize = 14)
 ax[4].set_xlabel("Evolutionary Time", fontsize = 14)
-ax[3].text(0.02,1.05,panel_labels[4], transform=ax[4].transAxes, fontsize = 14)
+ax[4].text(0.02,1.05,panel_labels[4], transform=ax[4].transAxes, fontsize = 14)
 #Saving the figure as a png and a pdf
 plt.savefig("../supplementary_figures/branching_fig.pdf", bbox_inches = "tight")
 plt.savefig("../supplementary_figures/branching_fig.png", bbox_inches = "tight")

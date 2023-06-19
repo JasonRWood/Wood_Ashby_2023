@@ -353,17 +353,17 @@ def calculate_covergence_stability(sol, attractors, beta_max, alpha_max, sigma_m
 #         convergence_stabilities.append((-1))
     return convergence_stabilities
 # Parameters for the system we wish to investigate
-rhos = [0.1, 0.5, 0.9]
+# rhos = [0.1, 0.5, 0.9]
 # rhos = [0.0, 1.0]
-# rhos = [1.0]
+rhos = [1.0]
 # rhos = [0.0, 0.1, 0.5, 0.9, 1.0]
 lams = [0.5, 1, 2.0]
 # lams = [0.0, 0.5, 1.0, 1.5, 2.0]
 # rhos = [1.0]
 b = 2.0
 q = 0.1
-d = 0.5
-gamma = 0.5
+d = 0.1
+gamma = 0.0
 # gamma = 1.0
 hyper = 1.0
 c1 = 0.75
@@ -372,7 +372,7 @@ b_base = 1
 q_base = 1
 
 alpha_max = 5
-sigma_max = 4
+sigma_max = 0.4
 beta_max = 5
 
 sigma_min = 0.0
@@ -461,10 +461,10 @@ gs1 = fig1.add_gridspec(4,len(lams))
 ax1 = []
 
 #And one for the ecological consequences
-fig2 = plt.figure(figsize = (40, 33))
+# fig2 = plt.figure(figsize = (40, 33))
 # gs2 = fig2.add_gridspec(3,len(lams))
-gs2 = fig2.add_gridspec(3,len(lams))
-ax2 = []
+# gs2 = fig2.add_gridspec(3,len(lams))
+#ax2 = []
 
 #Flavour text to add to the readibility of the plots
 texts = [["(A)", "(B)", "(C)"],["(D)", "(E)", "(F)"], ["(G)","(H)","(I)"], ["(J)", "(K)", "(L)"]]
@@ -473,7 +473,7 @@ titles = ["Hypovirulence ", "No effect on virulence ", "Hypervirulence "]
 # titles = ["Hypovirulence ", "Hypovirulence ", "No effect on virulence ", "Hypervirulence ", "Hypervirulence "]
 
 #Structuring the figures so we can access subplots
-for i in range(2):
+for i in range(4):
     temp_ax = []
     for j in range(len(lams)):
         temp_ax.append(fig1.add_subplot(gs1[i,j]))
@@ -483,13 +483,13 @@ for i in range(2):
 #     temp_ax = []
 #     for j in range(len(lams)):
 #         temp_ax.append(fig2.add_subplot(gs2[i,j]))
-#     ax2.append(temp_ax)
+#     #ax2.append(temp_ax)
     
-for i in range(3):
-    temp_ax = []
-    for j in range(len(lams)):
-        temp_ax.append(fig2.add_subplot(gs2[i,j]))
-    ax2.append(temp_ax)
+# for i in range(3):
+#     temp_ax = []
+#     for j in range(len(lams)):
+#         temp_ax.append(fig2.add_subplot(gs2[i,j]))
+    #ax2.append(temp_ax)
     
     
 sigma_res = [sigma_max*(i/100) for i in range(101)]
@@ -777,25 +777,25 @@ for lam_tracker, lam in enumerate(lams):
             temp_convergences_1 = calculate_covergence_stability(sol, temp_attractors_1, beta_max, alpha_max, sigma_max, sigma, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed)
             temp_convergences_2 = calculate_covergence_stability(sol, temp_attractors_2, beta_max, alpha_max, sigma_max, sigma, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed)
             
-            for i, val in enumerate(temp_convergences_1):
-                if val > 0:
-                    print(val, temp_etas_1[i], temp_attractors_1[i], seed, "type 1")
-                    j = 0
-                    while ((j/100)*alpha_max < temp_attractors_1[i]):
-                        j += 1
-                    j += -1
-                    sol.alpha_ad_dyn(beta_max, alpha_max, sigma_max, b, q, d, rho, temp_etas_1[i], gamma, lam, c1, c2, hyper, seed, j, sigma_init, S_density = host_density, I_density = para_density, H_density = hyper_density)
-                    seed += 1
+#             for i, val in enumerate(temp_convergences_1):
+#                 if val > 0:
+#                     print(val, temp_etas_1[i], temp_attractors_1[i], seed, "type 1")
+#                     j = 0
+#                     while ((j/100)*alpha_max < temp_attractors_1[i]):
+#                         j += 1
+#                     j += -1
+#                     sol.alpha_ad_dyn(beta_max, alpha_max, sigma_max, b, q, d, rho, temp_etas_1[i], gamma, lam, c1, c2, hyper, seed, j, sigma_init, S_density = host_density, I_density = para_density, H_density = hyper_density)
+#                     seed += 1
                     
-            for i, val in enumerate(temp_convergences_2):
-                if val > 0:
-                    print(val, temp_etas_2[i], temp_attractors_2[i], seed, "type 2")
-                    j = 0
-                    while ((j/100)*alpha_max < temp_attractors_2[i]):
-                        j += 1
-                    j += -1
-                    sol.alpha_ad_dyn(beta_max, alpha_max, sigma_max, b, q, d, rho, temp_etas_2[i], gamma, lam, c1, c2, hyper, seed, j, sigma_init, S_density = host_density, I_density = para_density, H_density = hyper_density)
-                    seed += 1
+#             for i, val in enumerate(temp_convergences_2):
+#                 if val > 0:
+#                     print(val, temp_etas_2[i], temp_attractors_2[i], seed, "type 2")
+#                     j = 0
+#                     while ((j/100)*alpha_max < temp_attractors_2[i]):
+#                         j += 1
+#                     j += -1
+#                     sol.alpha_ad_dyn(beta_max, alpha_max, sigma_max, b, q, d, rho, temp_etas_2[i], gamma, lam, c1, c2, hyper, seed, j, sigma_init, S_density = host_density, I_density = para_density, H_density = hyper_density)
+#                     seed += 1
                     
             #We calculate the ecological consequences of the introduction of a hyperparasite
             plotting_dict_deaths_1[rho]["1"], plotting_dict_deaths_2[rho]["1"], plotting_dict_pops[rho]["1"], plotting_dict_inf[rho]["1"], host_density_attractor, para_density_attractor, plotting_dict_hypers[rho]["1"], plotting_dict_pop_virulences[rho]["1"] = produce_suplimentary_data(
@@ -897,10 +897,10 @@ for lam_tracker, lam in enumerate(lams):
             l1 = ax1[0][lam_tracker].plot(eta_attractors[rho]['1'], alpha_attractors[rho]['1'], c = f"{colours[i]}")
             lines1.append(l1)
     
-    for i, rho in enumerate(rhos):
-        if lam_tracker == 0:
-            l1 = ax2[0][lam_tracker].plot(eta_attractors[rho]['1'], plotting_dict_deaths_2[rho]["1"], c = f"{colours[i]}")
-            lines2.append(l1)        
+#     for i, rho in enumerate(rhos):
+#         if lam_tracker == 0:
+#             l1 = ax1[3][lam_tracker].plot(eta_attractors[rho]['1'], plotting_dict_deaths_2[rho]["1"], c = f"{colours[i]}")
+#             lines2.append(l1)        
     
     #First we plot the evolved levels of virulence
     for i, rho in enumerate(rhos):
@@ -976,83 +976,82 @@ for lam_tracker, lam in enumerate(lams):
     ax1[0][lam_tracker].tick_params(axis='both', which='major', labelsize=34)
     if lam_tracker == 0:
         ax1[0][lam_tracker].set_ylabel(r"Evolved virulence, $\alpha$", fontsize = 34)
-        ax1[1][lam_tracker].set_ylabel("Population Level Virulence", fontsize = 34)
     ax1[0][lam_tracker].set_title(fr"{titles[lam_tracker]}($\lambda$ = {lam})", fontsize = 34)
     
     #First we plot the evolved levels of virulence
-    for i, rho in enumerate(rhos):
-        if lam_tracker == 0:
+#     for i, rho in enumerate(rhos):
+#         if lam_tracker == 0:
             
-            ax2[2][lam_tracker].plot(eta_attractors[rho]['1'], alpha_attractors[rho]['1'], c = f"{colours[i]}")
+#             #ax2[2][lam_tracker].plot(eta_attractors[rho]['1'], alpha_attractors[rho]['1'], c = f"{colours[i]}")
             
-            ax2[2][lam_tracker].plot(eta_attractors[rho]['2'], alpha_attractors[rho]['2'], c = f"{colours[i]}")
+#             #ax2[2][lam_tracker].plot(eta_attractors[rho]['2'], alpha_attractors[rho]['2'], c = f"{colours[i]}")
             
-            #This marks the begining and end of the first section of the plot
-            ax2[2][lam_tracker].scatter(eta_attractors[rho]['1'][-1], alpha_attractors[rho]['1'][-1], edgecolors = f"{colours[i]}", marker = "o", facecolors= f"{colours[i]}", s = 200)
-            ax2[2][lam_tracker].scatter(eta_attractors[rho]['1'][0], alpha_attractors[rho]['1'][0], edgecolors = f"{colours[i]}", marker = "o", facecolors="none", s = 200)
+#             #This marks the begining and end of the first section of the plot
+#             #ax2[2][lam_tracker].scatter(eta_attractors[rho]['1'][-1], alpha_attractors[rho]['1'][-1], edgecolors = f"{colours[i]}", marker = "o", facecolors= f"{colours[i]}", s = 200)
+#             #ax2[2][lam_tracker].scatter(eta_attractors[rho]['1'][0], alpha_attractors[rho]['1'][0], edgecolors = f"{colours[i]}", marker = "o", facecolors="none", s = 200)
             
-            #If there is a hysteresis effect this will work, else we'll except straight through
-            try:
-                ax2[2][lam_tracker].scatter(eta_attractors[rho]['2'][-1], alpha_attractors[rho]['2'][-1], edgecolors = f"{colours[i]}", marker = "s", facecolors= f"{colours[i]}", s = 200)
-                ax2[2][lam_tracker].scatter(eta_attractors[rho]['2'][0], alpha_attractors[rho]['2'][0], edgecolors = f"{colours[i]}", marker = "s", facecolors="none", s = 200)
-            except:
-                pass
+#             #If there is a hysteresis effect this will work, else we'll except straight through
+# #             try:
+#                 #ax2[2][lam_tracker].scatter(eta_attractors[rho]['2'][-1], alpha_attractors[rho]['2'][-1], edgecolors = f"{colours[i]}", marker = "s", facecolors= f"{colours[i]}", s = 200)
+#                 #ax2[2][lam_tracker].scatter(eta_attractors[rho]['2'][0], alpha_attractors[rho]['2'][0], edgecolors = f"{colours[i]}", marker = "s", facecolors="none", s = 200)
+# #             except:
+# #                 pass
             
-            #This checks if we need to plot the repellers and then links the repellers to the start and end of the attractors
-            #as appropriate
-            if len(plotting_dict_hyper[rho]["r"]) > 0:
-                repeller_etas = [eta_attractors[rho]["2"][0]]
-                for val in plotting_dict_hyper[rho]["r"]:
-                    repeller_etas.append(val)
-                repeller_etas.append(eta_attractors[rho]["1"][-1])
+#             #This checks if we need to plot the repellers and then links the repellers to the start and end of the attractors
+#             #as appropriate
+#             if len(plotting_dict_hyper[rho]["r"]) > 0:
+#                 repeller_etas = [eta_attractors[rho]["2"][0]]
+#                 for val in plotting_dict_hyper[rho]["r"]:
+#                     repeller_etas.append(val)
+#                 repeller_etas.append(eta_attractors[rho]["1"][-1])
 
-                repeller_alphas = [alpha_attractors[rho]['2'][0]]
-                for val in plotting_dict_repellers[rho]:
-                    repeller_alphas.append(val)
+#                 repeller_alphas = [alpha_attractors[rho]['2'][0]]
+#                 for val in plotting_dict_repellers[rho]:
+#                     repeller_alphas.append(val)
 
-                repeller_alphas.append(alpha_attractors[rho]["1"][-1])
-            else:
-                repeller_etas = plotting_dict_hyper[rho]["r"]
-                repeller_alphas = plotting_dict_repellers[rho]
+#                 repeller_alphas.append(alpha_attractors[rho]["1"][-1])
+#             else:
+#                 repeller_etas = plotting_dict_hyper[rho]["r"]
+#                 repeller_alphas = plotting_dict_repellers[rho]
                 
-            ax2[2][lam_tracker].plot(repeller_etas, repeller_alphas,  c = f"{colours[i]}", linestyle='dashed')
-        else:
-            ax2[2][lam_tracker].plot(eta_attractors[rho]['1'], alpha_attractors[rho]['1'], c = f"{colours[i]}")
-            ax2[2][lam_tracker].plot(eta_attractors[rho]['2'], alpha_attractors[rho]['2'], c = f"{colours[i]}")
-            ax2[2][lam_tracker].scatter(eta_attractors[rho]['1'][0], alpha_attractors[rho]['1'][0], edgecolors = f"{colours[i]}", marker = "o", facecolors="none", s = 200)
-            ax2[2][lam_tracker].scatter(eta_attractors[rho]['1'][-1], alpha_attractors[rho]['1'][-1], edgecolors = f"{colours[i]}", marker = "o", facecolors= f"{colours[i]}", s = 200)
-            try:
-                ax2[2][lam_tracker].scatter(eta_attractors[rho]['2'][0], alpha_attractors[rho]['2'][0], edgecolors = f"{colours[i]}", marker = "s", facecolors = "none", s = 200)
-                ax2[2][lam_tracker].scatter(eta_attractors[rho]['2'][-1], alpha_attractors[rho]['2'][-1], edgecolors = f"{colours[i]}", marker = "s", facecolors= f"{colours[i]}", s = 200)
-            except:
-                pass
-            if len(plotting_dict_hyper[rho]["r"]) > 0:
-                repeller_etas = [eta_attractors[rho]["2"][0]]
-                for val in plotting_dict_hyper[rho]["r"]:
-                    repeller_etas.append(val)
-                repeller_etas.append(eta_attractors[rho]["1"][-1])
+#             #ax2[2][lam_tracker].plot(repeller_etas, repeller_alphas,  c = f"{colours[i]}", linestyle='dashed')
+#         else:
+#             #ax2[2][lam_tracker].plot(eta_attractors[rho]['1'], alpha_attractors[rho]['1'], c = f"{colours[i]}")
+#             #ax2[2][lam_tracker].plot(eta_attractors[rho]['2'], alpha_attractors[rho]['2'], c = f"{colours[i]}")
+#             #ax2[2][lam_tracker].scatter(eta_attractors[rho]['1'][0], alpha_attractors[rho]['1'][0], edgecolors = f"{colours[i]}", marker = "o", facecolors="none", s = 200)
+#             #ax2[2][lam_tracker].scatter(eta_attractors[rho]['1'][-1], alpha_attractors[rho]['1'][-1], edgecolors = f"{colours[i]}", marker = "o", facecolors= f"{colours[i]}", s = 200)
+#             try:
+#                 #ax2[2][lam_tracker].scatter(eta_attractors[rho]['2'][0], alpha_attractors[rho]['2'][0], edgecolors = f"{colours[i]}", marker = "s", facecolors = "none", s = 200)
+#                 #ax2[2][lam_tracker].scatter(eta_attractors[rho]['2'][-1], alpha_attractors[rho]['2'][-1], edgecolors = f"{colours[i]}", marker = "s", facecolors= f"{colours[i]}", s = 200)
+#             except:
+#                 pass
+#             if len(plotting_dict_hyper[rho]["r"]) > 0:
+#                 repeller_etas = [eta_attractors[rho]["2"][0]]
+#                 for val in plotting_dict_hyper[rho]["r"]:
+#                     repeller_etas.append(val)
+#                 repeller_etas.append(eta_attractors[rho]["1"][-1])
 
-                repeller_alphas = [alpha_attractors[rho]['2'][0]]
-                for val in plotting_dict_repellers[rho]:
-                    repeller_alphas.append(val)
+#                 repeller_alphas = [alpha_attractors[rho]['2'][0]]
+#                 for val in plotting_dict_repellers[rho]:
+#                     repeller_alphas.append(val)
 
-                repeller_alphas.append(alpha_attractors[rho]["1"][-1])
-            else:
-                repeller_etas = plotting_dict_hyper[rho]["r"]
-                repeller_alphas = plotting_dict_repellers[rho]
+#                 repeller_alphas.append(alpha_attractors[rho]["1"][-1])
+#             else:
+#                 repeller_etas = plotting_dict_hyper[rho]["r"]
+#                 repeller_alphas = plotting_dict_repellers[rho]
                 
-            ax2[2][lam_tracker].plot(repeller_etas, repeller_alphas,  c = f"{colours[i]}", linestyle='dashed')
+            #ax2[2][lam_tracker].plot(repeller_etas, repeller_alphas,  c = f"{colours[i]}", linestyle='dashed')
 
 
-    ax2[2][lam_tracker].plot(plotting_dict_no_hyper[rho]["a"],plotting_dict_attractors_no_hyper[rho], c = "k")
-    ax2[2][lam_tracker].plot(plotting_dict_no_hyper[rho]["r"],plotting_dict_repellers_no_hyper[rho], c = "k")
-#     ax2[2][lam_tracker].text(0.05,1.01,texts[0][lam_tracker], transform=ax1[0][lam_tracker].transAxes, fontsize = 30)
+    #ax2[2][lam_tracker].plot(plotting_dict_no_hyper[rho]["a"],plotting_dict_attractors_no_hyper[rho], c = "k")
+    #ax2[2][lam_tracker].plot(plotting_dict_no_hyper[rho]["r"],plotting_dict_repellers_no_hyper[rho], c = "k")
+#     #ax2[2][lam_tracker].text(0.05,1.01,texts[0][lam_tracker], transform=ax1[0][lam_tracker].transAxes, fontsize = 30)
     
-    ax2[2][lam_tracker].set_xlabel("", fontsize = 0)
-    ax2[2][lam_tracker].set_ylim([0, 1.1*alpha_max_res])
-    ax2[2][lam_tracker].tick_params(axis='both', which='major', labelsize=34)
-    if lam_tracker == 0:
-        ax2[2][lam_tracker].set_ylabel(r"Evolved virulence, $\alpha$", fontsize = 34)
+    #ax2[2][lam_tracker].set_xlabel("", fontsize = 0)
+    #ax2[2][lam_tracker].set_ylim([0, 1.1*alpha_max_res])
+    #ax2[2][lam_tracker].tick_params(axis='both', which='major', labelsize=34)
+#     if lam_tracker == 0:
+        #ax2[2][lam_tracker].set_ylabel(r"Evolved virulence, $\alpha$", fontsize = 34)
 #     for i, rho in enumerate(rhos):
 #         ax1[1][lam_tracker].plot(eta_attractors[rho]['1'], plotting_dict_pop_virulences[rho]["1"], c = f"{colours[i]}")
 #         ax1[1][lam_tracker].plot(eta_attractors[rho]['2'], plotting_dict_pop_virulences[rho]["2"], c = f"{colours[i]}")
@@ -1075,58 +1074,58 @@ for lam_tracker, lam in enumerate(lams):
         
     #Here we plot the affect on the population of infected hosts
     for i, rho in enumerate(rhos):
-        ax2[0][lam_tracker].plot(eta_attractors[rho]['1'], plotting_dict_deaths_2[rho]["1"], c = f"{colours[i]}")
-        ax2[0][lam_tracker].plot(eta_attractors[rho]['2'], plotting_dict_deaths_2[rho]["2"], c = f"{colours[i]}")
-        ax2[0][lam_tracker].scatter(eta_attractors[rho]['1'][0], plotting_dict_deaths_2[rho]['1'][0], edgecolors = f"{colours[i]}", marker = "o", facecolors="none", s = 200)
-        ax2[0][lam_tracker].scatter(eta_attractors[rho]['1'][-1], plotting_dict_deaths_2[rho]['1'][-1], edgecolors = f"{colours[i]}", marker = "o", facecolors= f"{colours[i]}", s = 200)
+        ax1[2][lam_tracker].plot(eta_attractors[rho]['1'], plotting_dict_deaths_2[rho]["1"], c = f"{colours[i]}")
+        ax1[2][lam_tracker].plot(eta_attractors[rho]['2'], plotting_dict_deaths_2[rho]["2"], c = f"{colours[i]}")
+        ax1[2][lam_tracker].scatter(eta_attractors[rho]['1'][0], plotting_dict_deaths_2[rho]['1'][0], edgecolors = f"{colours[i]}", marker = "o", facecolors="none", s = 200)
+        ax1[2][lam_tracker].scatter(eta_attractors[rho]['1'][-1], plotting_dict_deaths_2[rho]['1'][-1], edgecolors = f"{colours[i]}", marker = "o", facecolors= f"{colours[i]}", s = 200)
         try:
-            ax2[0][lam_tracker].scatter(eta_attractors[rho]['2'][0], plotting_dict_deaths_2[rho]['2'][0], edgecolors = f"{colours[i]}", marker = "s", facecolors= "none", s = 200)
-            ax2[0][lam_tracker].scatter(eta_attractors[rho]['2'][-1], plotting_dict_deaths_2[rho]['2'][-1], edgecolors = f"{colours[i]}", marker = "s", facecolors= f"{colours[i]}", s = 200)
+            ax1[2][lam_tracker].scatter(eta_attractors[rho]['2'][0], plotting_dict_deaths_2[rho]['2'][0], edgecolors = f"{colours[i]}", marker = "s", facecolors= "none", s = 200)
+            ax1[2][lam_tracker].scatter(eta_attractors[rho]['2'][-1], plotting_dict_deaths_2[rho]['2'][-1], edgecolors = f"{colours[i]}", marker = "s", facecolors= f"{colours[i]}", s = 200)
         except:
             pass
 
-    ax2[0][lam_tracker].plot(plotting_dict_hyper[rho]["a"], [1 for val in plotting_dict_hyper[rho]["a"]], c = "k")
-    ax2[0][lam_tracker].plot(plotting_dict_hyper[rho]["r"], [1 for val in plotting_dict_hyper[rho]["r"]], c = "k")
+    ax1[2][lam_tracker].plot(plotting_dict_hyper[rho]["a"], [1 for val in plotting_dict_hyper[rho]["a"]], c = "k")
+    ax1[2][lam_tracker].plot(plotting_dict_hyper[rho]["r"], [1 for val in plotting_dict_hyper[rho]["r"]], c = "k")
 
     
-    ax2[0][lam_tracker].set_xlabel("", fontsize = 0)
-    ax2[0][lam_tracker].set_ylim([0.8, 3.2])
-    ax2[0][lam_tracker].text(0.05,1.01,texts[0][lam_tracker], transform=ax2[0][lam_tracker].transAxes, fontsize = 30)
-    ax2[0][lam_tracker].tick_params(axis='both', which='major', labelsize=34)
+    ax1[2][lam_tracker].set_xlabel("", fontsize = 0)
+#     ax1[2][lam_tracker].set_ylim([0.8, 3.2])
+    ax1[2][lam_tracker].text(0.05,1.01,texts[2][lam_tracker], transform=ax1[2][lam_tracker].transAxes, fontsize = 30)
+    ax1[2][lam_tracker].tick_params(axis='both', which='major', labelsize=34)
     if lam_tracker == 0:
-        ax2[0][lam_tracker].set_ylabel("Relative Infected Mortality", fontsize = 34)
+        ax1[2][lam_tracker].set_ylabel("Relative Avarage Virulence, $\Delta M(\alpha ^*)$", fontsize = 34)
         
-    ax2[0][lam_tracker].set_title(fr"{titles[lam_tracker]}($\lambda$ = {lam})", fontsize = 34)
+#     ax1[2][lam_tracker].set_title(fr"{titles[lam_tracker]}($\lambda$ = {lam})", fontsize = 34)
     
     #Here we plot the affect on the overall host population
     for i, rho in enumerate(rhos):
-        ax2[1][lam_tracker].plot(eta_attractors[rho]['1'], plotting_dict_pops[rho]["1"], c = f"{colours[i]}")
-        ax2[1][lam_tracker].plot(eta_attractors[rho]['2'], plotting_dict_pops[rho]["2"], c = f"{colours[i]}")
-        ax2[1][lam_tracker].scatter(eta_attractors[rho]['1'][0], plotting_dict_pops[rho]['1'][0], edgecolors = f"{colours[i]}", marker = "o", facecolors="none", s = 200)
-        ax2[1][lam_tracker].scatter(eta_attractors[rho]['1'][-1], plotting_dict_pops[rho]['1'][-1], edgecolors = f"{colours[i]}", marker = "o", facecolors= f"{colours[i]}", s = 200)
+        ax1[3][lam_tracker].plot(eta_attractors[rho]['1'], plotting_dict_pops[rho]["1"], c = f"{colours[i]}")
+        ax1[3][lam_tracker].plot(eta_attractors[rho]['2'], plotting_dict_pops[rho]["2"], c = f"{colours[i]}")
+        ax1[3][lam_tracker].scatter(eta_attractors[rho]['1'][0], plotting_dict_pops[rho]['1'][0], edgecolors = f"{colours[i]}", marker = "o", facecolors="none", s = 200)
+        ax1[3][lam_tracker].scatter(eta_attractors[rho]['1'][-1], plotting_dict_pops[rho]['1'][-1], edgecolors = f"{colours[i]}", marker = "o", facecolors= f"{colours[i]}", s = 200)
         try:
-            ax2[1][lam_tracker].scatter(eta_attractors[rho]['2'][-1], plotting_dict_pops[rho]['2'][-1], edgecolors = f"{colours[i]}", marker = "s", facecolors= f"{colours[i]}", s = 200)
-            ax2[1][lam_tracker].scatter(eta_attractors[rho]['2'][0], plotting_dict_pops[rho]['2'][0], edgecolors = f"{colours[i]}", marker = "s", facecolors="none", s = 200)
+            ax1[3][lam_tracker].scatter(eta_attractors[rho]['2'][-1], plotting_dict_pops[rho]['2'][-1], edgecolors = f"{colours[i]}", marker = "s", facecolors= f"{colours[i]}", s = 200)
+            ax1[3][lam_tracker].scatter(eta_attractors[rho]['2'][0], plotting_dict_pops[rho]['2'][0], edgecolors = f"{colours[i]}", marker = "s", facecolors="none", s = 200)
         except:
             pass
         
 
-    ax2[1][lam_tracker].plot(plotting_dict_hyper[rho]["a"], [1 for val in plotting_dict_hyper[rho]["a"]], c = "k")
-    ax2[1][lam_tracker].plot(plotting_dict_hyper[rho]["r"], [1 for val in plotting_dict_hyper[rho]["r"]], c = "k")
+    ax1[3][lam_tracker].plot(plotting_dict_hyper[rho]["a"], [1 for val in plotting_dict_hyper[rho]["a"]], c = "k")
+    ax1[3][lam_tracker].plot(plotting_dict_hyper[rho]["r"], [1 for val in plotting_dict_hyper[rho]["r"]], c = "k")
 
 
-    if lam_tracker == 1:
-        ax2[2][lam_tracker].set_xlabel(xlabel, fontsize = 34)
-    else:
-        ax2[2][lam_tracker].set_xlabel("", fontsize = 0)
+#     if lam_tracker == 1:
+        #ax2[2][lam_tracker].set_xlabel(xlabel, fontsize = 34)
+#     else:
+        #ax2[2][lam_tracker].set_xlabel("", fontsize = 0)
         
-    ax2[1][lam_tracker].set_ylim([0.3, 1.5])
-    ax2[1][lam_tracker].tick_params(axis='both', which='major', labelsize=34)
-    ax2[1][lam_tracker].text(0.05,1.01,texts[1][lam_tracker], transform=ax2[1][lam_tracker].transAxes, fontsize = 30)
-    ax2[2][lam_tracker].text(0.05,1.01,texts[2][lam_tracker], transform=ax2[2][lam_tracker].transAxes, fontsize = 30)
+#     ax1[3][lam_tracker].set_ylim([0.3, 1.5])
+    ax1[3][lam_tracker].tick_params(axis='both', which='major', labelsize=34)
+    ax1[3][lam_tracker].text(0.05,1.01,texts[3][lam_tracker], transform=ax1[3][lam_tracker].transAxes, fontsize = 30)
+    #ax2[2][lam_tracker].text(0.05,1.01,texts[2][lam_tracker], transform=#ax2[2][lam_tracker].transAxes, fontsize = 30)
     
     if lam_tracker == 0:
-        ax2[1][lam_tracker].set_ylabel("Relative Population Size", fontsize = 34)
+        ax1[3][lam_tracker].set_ylabel(r"Relative Population Size, $\Delta N(\alpha ^*)$", fontsize = 34)
     
 #     for i, rho in enumerate(rhos):
 #         ax1[1][lam_tracker].plot(eta_attractors[rho]['1'], plotting_dict_hypers[rho]["1"], c = f"{colours[i]}")
@@ -1151,30 +1150,31 @@ for lam_tracker, lam in enumerate(lams):
             pass
         
     if lam_tracker == 0:
-        ax1[1][lam_tracker].set_ylabel("Proportion of Hyperparasitised Parasites", fontsize = 34)
+        ax1[1][lam_tracker].set_ylabel(r"Hyperparasite Prevalance, $\frac{H}{I + H} $", fontsize = 34)
         
     
     if lam_tracker == 1:
-        ax1[1][lam_tracker].set_xlabel(xlabel, fontsize = 34)
+        ax1[3][lam_tracker].set_xlabel(xlabel, fontsize = 34)
     else:
         ax1[1][lam_tracker].set_xlabel("", fontsize = 0)
-    ax1[1][lam_tracker]
+        
+    ax1[1][lam_tracker].set_ylim([0,1])
     ax1[1][lam_tracker].tick_params(axis='both', which='major', labelsize=34)
     ax1[1][lam_tracker].text(0.05,1.01,texts[1][lam_tracker], transform=ax1[1][lam_tracker].transAxes, fontsize = 30)
-#     ax2[2][lam_tracker].text(0.05,1.01,texts[2][lam_tracker], transform=ax2[2][lam_tracker].transAxes, fontsize = 30)
+#     #ax2[2][lam_tracker].text(0.05,1.01,texts[2][lam_tracker], transform=#ax2[2][lam_tracker].transAxes, fontsize = 30)
 #After this we save the figures in the appropriate folder
 
-fig2.legend(lines2,
-   labels=labels,
-   title='Probability of cotransmission',
-   fontsize = 24,
-   loc="upper right",
-   title_fontsize=26,
-   bbox_to_anchor=(0.90,0.85)
-   )
+# fig2.legend(lines2,
+#    labels=labels,
+#    title='Probability of cotransmission',
+#    fontsize = 24,
+#    loc="upper right",
+#    title_fontsize=26,
+#    bbox_to_anchor=(0.90,0.85)
+#    )
 
-plt.savefig(f"{output_folder}/effects_of_hyperparasitism.png", bbox_inches='tight')
-plt.close()
+# plt.savefig(f"{output_folder}/effects_of_hyperparasitism.png", bbox_inches='tight')
+# plt.close()
 
 fig1.legend(lines1,
    labels=labels,
