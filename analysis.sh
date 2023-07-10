@@ -12,6 +12,8 @@ cd H-P-HP/
 python3 setup.py build_ext --inplace
 python3 ad_dyn_hysteresis.py
 python3 eta_evo.py
-# python3 linear_heatmap_res_scalar.py
+# The file linear_heatmap_res_scalar.py is commented out as it takes ~1 day to run on
+# a local machine
+# python3 linear_heatmap_res_scalar.py 
 python3 visualise_branching_matrices.py
 python3 branching_with_linear.py
