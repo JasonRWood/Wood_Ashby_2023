@@ -194,7 +194,7 @@ resolution = 100
 param_res = 200
 
 eta_min = 0.0
-eta_max = 2.0
+eta_max = 1.25
 etas = [eta_min + (eta_max - eta_min)*i/param_res for i in range(param_res + 1)]
 
 
@@ -369,7 +369,7 @@ alpha_mean = sum(alpha_weights)
 #Rounding this to the closest integer to use as our initial conditions
 alpha_init = round(alpha_mean)
 
-host_density = dft["Density_of_hyperparasite"].iloc[0]
+host_density = dft["Density_of_Hosts"].iloc[0]
 para_density = sum(dft["Density_of_parasite"].values)
 hyper_density = 0.1
 
@@ -397,7 +397,7 @@ for eta in evo_etas:
         if (den + hyper_densities[i]) > max_density:
             alpha_init = trait_inds[i]
     
-    host_density = dft["Density_of_hyperparasite"].iloc[0]
+    host_density = dft["Density_of_Hosts"].iloc[0]
     para_density = sum(dft["Density_of_parasite"].values)
     hyper_density = sum(dft["Density_of_hyperparasite"].values)
     
@@ -412,10 +412,10 @@ for i in range(len(etas)):
     
 #Colours associated with the values of eta
 colours = {0.5:"black", 0.2:"blue", 1.0:"red"}
-
+n = 8
 #Creating and saving the figure
-fig, ax = plt.subplots(figsize = (8, 12))
-left, bottom, width, height = [.35, 0.7, 0.5, 0.15]
+fig, ax = plt.subplots(figsize = (n, n))
+left, bottom, width, height = [0.4, 0.7, 0.45, 0.10]
 ax_new = fig.add_axes([left, bottom, width, height])
     
 tagged_labels = []
@@ -454,24 +454,25 @@ else:
     repeller_alphas = plotting_dict_repellers
 
 ax_new.plot(repeller_etas, repeller_alphas,  c = "tab:green", linestyle='dashed')
-
+ax_new.set_xlim([0,etas[-1]])
 for i,val in enumerate(plotting_etas_attractors_hyper):
     if val in evo_etas:
         print(val, plotting_attractors_hyper[i])
         ax_new.scatter(val, plotting_attractors_hyper[i], c = colours[val])
         
-fig.legend(
-   fontsize = 24,
-   loc="upper right",
-   bbox_to_anchor=(0.5,0.5)
-)
+# fig.legend(
+#    fontsize = 2*n,
+#    loc="upper right",
+#    bbox_to_anchor=(0.5,0.5)
+# )
 ax.set_xlabel(r"Intrinsic virulence, $\alpha$", fontsize = 28)
 ax.set_xlim([0,3])
+ax.tick_params(axis='both', which='major', labelsize=12)
 ax.set_ylabel("Evolutionary Time", fontsize = 28)
 
-ax_new.set_xlabel(r"Hyperparasite Transmission Modifier, $\eta$", fontsize = 14)
-ax_new.set_ylim([0,alpha_max])
-ax_new.set_ylabel(r"Parasite virulence, $\alpha$", fontsize = 14)
+ax_new.set_xlabel(r"Hyperparasite Transmission Modifier, $\eta$", fontsize = 10)
+ax_new.set_ylim([0,3])
+ax_new.set_ylabel(r"Parasite virulence, $\alpha$", fontsize = 10)
 
 # ax.legend(loc='center left', bbox_to_anchor=(0.6, 0.85), fontsize = 14)
 plt.savefig("../supplementary_figures/ad_dyn_figure.png", bbox_inches='tight')

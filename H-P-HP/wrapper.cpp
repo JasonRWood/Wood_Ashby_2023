@@ -1187,6 +1187,7 @@ namespace solvers{
         S[0] = y[0];
         I[0] = y[1];
         H[0] = y[2];
+//         exit_flag[0] = 1;
     }
 
     void Quick_solver::alpha_evo_only(float beta_max, float alpha_max, float sigma_max, float b, float q, float d, float rho, float eta, float gamma, float lambda, float c1, float c2, float hyper, int seed, int alpha_init, int sigma_init, float S_density, float I_density, float H_density){

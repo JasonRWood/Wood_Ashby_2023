@@ -251,7 +251,7 @@ lam_min = 0.0
 lam_max = 5.0
 
 eta_min = 0.0
-eta_max = 2.0
+eta_max = 1.0
 seed_base = 100
 evo_step_count = 2000
 
@@ -318,7 +318,7 @@ alpha_init = round(alpha_mean)
 
 #The densities we initiate our populations with, taken from the end of the simulation
 #without the hyperparasite present
-host_density = dft["Density_of_hyperparasite"].iloc[0]
+host_density = dft["Density_of_Hosts"].iloc[0]
 para_density = sum(dft["Density_of_parasite"].values)
 
 #We initiate the hyperparasite with a low density

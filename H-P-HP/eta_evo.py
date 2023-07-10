@@ -76,8 +76,8 @@ def calculate_alpha_gradient_vector(sol, resolution, beta_max, alpha_max, alpha_
             alpha_grad = 1*(alpha <= alpha_max/2) - 1*(alpha> alpha_max/2)
         elif (H == 0):
             alpha_grad = dbetadalpha*S/(d + alpha + gamma) - (beta*S)/((d + alpha + gamma)**2)
-        elif (I == 0):
-            alpha_grad = dbetadalpha*S/(d + lam*alpha + gamma) - (beta*S)/((d + lam*alpha + gamma)**2)
+#         elif (I == 0):
+#             alpha_grad = dbetadalpha*S/(d + lam*alpha + gamma) - (beta*S)/((d + lam*alpha + gamma)**2)
         else:
 #             if rho != 1:
             alpha_grad = ss.fitness_gradient_alpha(
@@ -353,17 +353,17 @@ def calculate_covergence_stability(sol, attractors, beta_max, alpha_max, sigma_m
 #         convergence_stabilities.append((-1))
     return convergence_stabilities
 # Parameters for the system we wish to investigate
-# rhos = [0.1, 0.5, 0.9]
+rhos = [0.1, 0.5, 0.9]
 # rhos = [0.0, 1.0]
-rhos = [1.0]
-# rhos = [0.0, 0.1, 0.5, 0.9, 1.0]
+# rhos = [1.0]
+# rhos = [0.1, 0.5, 0.9, 1.0]
 lams = [0.5, 1, 2.0]
 # lams = [0.0, 0.5, 1.0, 1.5, 2.0]
 # rhos = [1.0]
 b = 2.0
 q = 0.1
 d = 0.1
-gamma = 0.0
+gamma = 0.1
 # gamma = 1.0
 hyper = 1.0
 c1 = 0.75
@@ -469,7 +469,7 @@ ax1 = []
 #Flavour text to add to the readibility of the plots
 texts = [["(A)", "(B)", "(C)"],["(D)", "(E)", "(F)"], ["(G)","(H)","(I)"], ["(J)", "(K)", "(L)"]]
 
-titles = ["Hypovirulence ", "No effect on virulence ", "Hypervirulence "]
+titles = ["Hypovirulence ", "No direct effect on virulence ", "Hypervirulence "]
 # titles = ["Hypovirulence ", "Hypovirulence ", "No effect on virulence ", "Hypervirulence ", "Hypervirulence "]
 
 #Structuring the figures so we can access subplots
@@ -523,7 +523,7 @@ alpha_init = round(alpha_mean)
 
 alpha_mean_base = alpha_init*alpha_max/100
 
-host_density = dft["Density_of_hyperparasite"].iloc[0]
+host_density = dft["Density_of_Hosts"].iloc[0]
 para_density = sum(dft["Density_of_parasite"].values)
 hyper_density = 0.1
 
@@ -969,14 +969,15 @@ for lam_tracker, lam in enumerate(lams):
 
     ax1[0][lam_tracker].plot(plotting_dict_no_hyper[rho]["a"],plotting_dict_attractors_no_hyper[rho], c = "k")
     ax1[0][lam_tracker].plot(plotting_dict_no_hyper[rho]["r"],plotting_dict_repellers_no_hyper[rho], c = "k")
-    ax1[0][lam_tracker].text(0.05,1.01,texts[0][lam_tracker], transform=ax1[0][lam_tracker].transAxes, fontsize = 30)
+    ax1[0][lam_tracker].text(0.03, 1.01,texts[0][lam_tracker], transform=ax1[0][lam_tracker].transAxes, fontsize = 30)
     
     ax1[0][lam_tracker].set_xlabel("", fontsize = 0)
-    ax1[0][lam_tracker].set_ylim([0, 1.1*alpha_max_res])
+#     ax1[0][lam_tracker].set_ylim([0, alpha_max_res])
+    ax1[0][lam_tracker].set_ylim([0, 2.5])
     ax1[0][lam_tracker].tick_params(axis='both', which='major', labelsize=34)
     if lam_tracker == 0:
-        ax1[0][lam_tracker].set_ylabel(r"Evolved virulence, $\alpha$", fontsize = 34)
-    ax1[0][lam_tracker].set_title(fr"{titles[lam_tracker]}($\lambda$ = {lam})", fontsize = 34)
+        ax1[0][lam_tracker].set_ylabel(r"Intrinsic virulence, $\alpha^*$", fontsize = 34)
+    ax1[0][lam_tracker].set_title(fr"{titles[lam_tracker]}($\lambda$ = {lam})", fontsize = 28)
     
     #First we plot the evolved levels of virulence
 #     for i, rho in enumerate(rhos):
@@ -1045,7 +1046,7 @@ for lam_tracker, lam in enumerate(lams):
 
     #ax2[2][lam_tracker].plot(plotting_dict_no_hyper[rho]["a"],plotting_dict_attractors_no_hyper[rho], c = "k")
     #ax2[2][lam_tracker].plot(plotting_dict_no_hyper[rho]["r"],plotting_dict_repellers_no_hyper[rho], c = "k")
-#     #ax2[2][lam_tracker].text(0.05,1.01,texts[0][lam_tracker], transform=ax1[0][lam_tracker].transAxes, fontsize = 30)
+#     #ax2[2][lam_tracker].text(0.03, 1.01,texts[0][lam_tracker], transform=ax1[0][lam_tracker].transAxes, fontsize = 30)
     
     #ax2[2][lam_tracker].set_xlabel("", fontsize = 0)
     #ax2[2][lam_tracker].set_ylim([0, 1.1*alpha_max_res])
@@ -1070,7 +1071,7 @@ for lam_tracker, lam in enumerate(lams):
 #     ax1[1][lam_tracker].plot(plotting_dict_no_hyper[rho]["a"],plotting_dict_attractors_no_hyper[rho], c = "k")
 #     ax1[1][lam_tracker].set_ylim([0, alpha_max_res])
 #     ax1[1][lam_tracker].tick_params(axis='both', which='major', labelsize=34)
-#     ax1[1][lam_tracker].text(0.05,1.01,texts[1][lam_tracker], transform=ax1[1][lam_tracker].transAxes, fontsize = 30)
+#     ax1[1][lam_tracker].text(0.03, 1.01,texts[1][lam_tracker], transform=ax1[1][lam_tracker].transAxes, fontsize = 30)
         
     #Here we plot the affect on the population of infected hosts
     for i, rho in enumerate(rhos):
@@ -1089,11 +1090,11 @@ for lam_tracker, lam in enumerate(lams):
 
     
     ax1[2][lam_tracker].set_xlabel("", fontsize = 0)
-#     ax1[2][lam_tracker].set_ylim([0.8, 3.2])
-    ax1[2][lam_tracker].text(0.05,1.01,texts[2][lam_tracker], transform=ax1[2][lam_tracker].transAxes, fontsize = 30)
+    ax1[2][lam_tracker].set_ylim([0.0, 8.0])
+    ax1[2][lam_tracker].text(0.03, 1.01,texts[2][lam_tracker], transform=ax1[2][lam_tracker].transAxes, fontsize = 30)
     ax1[2][lam_tracker].tick_params(axis='both', which='major', labelsize=34)
     if lam_tracker == 0:
-        ax1[2][lam_tracker].set_ylabel("Relative Avarage Virulence, $\Delta M(\alpha ^*)$", fontsize = 34)
+        ax1[2][lam_tracker].set_ylabel(r"Relative Avarage Virulence, $\Delta M(\alpha^*)$", fontsize = 34)
         
 #     ax1[2][lam_tracker].set_title(fr"{titles[lam_tracker]}($\lambda$ = {lam})", fontsize = 34)
     
@@ -1119,13 +1120,13 @@ for lam_tracker, lam in enumerate(lams):
 #     else:
         #ax2[2][lam_tracker].set_xlabel("", fontsize = 0)
         
-#     ax1[3][lam_tracker].set_ylim([0.3, 1.5])
+    ax1[3][lam_tracker].set_ylim([0.0, 1.1])
     ax1[3][lam_tracker].tick_params(axis='both', which='major', labelsize=34)
-    ax1[3][lam_tracker].text(0.05,1.01,texts[3][lam_tracker], transform=ax1[3][lam_tracker].transAxes, fontsize = 30)
-    #ax2[2][lam_tracker].text(0.05,1.01,texts[2][lam_tracker], transform=#ax2[2][lam_tracker].transAxes, fontsize = 30)
+    ax1[3][lam_tracker].text(0.03, 1.01,texts[3][lam_tracker], transform=ax1[3][lam_tracker].transAxes, fontsize = 30)
+    #ax2[2][lam_tracker].text(0.03, 1.01,texts[2][lam_tracker], transform=#ax2[2][lam_tracker].transAxes, fontsize = 30)
     
     if lam_tracker == 0:
-        ax1[3][lam_tracker].set_ylabel(r"Relative Population Size, $\Delta N(\alpha ^*)$", fontsize = 34)
+        ax1[3][lam_tracker].set_ylabel(r"Relative Population Size, $\Delta N(\alpha^*)$", fontsize = 34)
     
 #     for i, rho in enumerate(rhos):
 #         ax1[1][lam_tracker].plot(eta_attractors[rho]['1'], plotting_dict_hypers[rho]["1"], c = f"{colours[i]}")
@@ -1150,7 +1151,7 @@ for lam_tracker, lam in enumerate(lams):
             pass
         
     if lam_tracker == 0:
-        ax1[1][lam_tracker].set_ylabel(r"Hyperparasite Prevalance, $\frac{H}{I + H} $", fontsize = 34)
+        ax1[1][lam_tracker].set_ylabel(r"Hyperparasite Prevalance, $\frac{H}{I + H}$", fontsize = 34)
         
     
     if lam_tracker == 1:
@@ -1160,8 +1161,8 @@ for lam_tracker, lam in enumerate(lams):
         
     ax1[1][lam_tracker].set_ylim([0,1])
     ax1[1][lam_tracker].tick_params(axis='both', which='major', labelsize=34)
-    ax1[1][lam_tracker].text(0.05,1.01,texts[1][lam_tracker], transform=ax1[1][lam_tracker].transAxes, fontsize = 30)
-#     #ax2[2][lam_tracker].text(0.05,1.01,texts[2][lam_tracker], transform=#ax2[2][lam_tracker].transAxes, fontsize = 30)
+    ax1[1][lam_tracker].text(0.03, 1.01,texts[1][lam_tracker], transform=ax1[1][lam_tracker].transAxes, fontsize = 30)
+#     #ax2[2][lam_tracker].text(0.03, 1.01,texts[2][lam_tracker], transform=#ax2[2][lam_tracker].transAxes, fontsize = 30)
 #After this we save the figures in the appropriate folder
 
 # fig2.legend(lines2,

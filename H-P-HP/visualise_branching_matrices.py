@@ -24,7 +24,7 @@ panel_labels = ["(A)", "(B)", "(C)"]
 
 resolution = 50
 
-fig = plt.figure(figsize = (1.6*resolution, resolution))
+fig = plt.figure(figsize = (2.5*resolution, 2.5*resolution))
 gs = fig.add_gridspec(1,3)
 ax = []
 for i in range(1):
@@ -39,6 +39,7 @@ for i in range(3):
     rho = rhos[i]
     
     df = pd.read_csv(f"../data/branching_mat_{i}.csv")
+#     df = df[df["eta_val"] <= 1.0]
     etas = df["eta_val"].values
     lams = [float(val) for val in df.columns[1:]]
     value_matrix = df[df.columns[1:]].values
@@ -53,21 +54,21 @@ for i in range(3):
     for k in range(len(value_matrix)):
         ticks_temp.append(k)
     
-    eta_ticks = [0.0, 0.4, 0.8, 1.2, 1.6, 2.0]
+    eta_ticks = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
     lam_ticks = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]
     ticks = [i for i in ticks_temp if lams[i] in lam_ticks]
     
     #Adding our ticks to the various subplots
-    ax[0][i].set_yticks(ticks = ticks, labels = eta_ticks, fontsize = resolution)
-    ax[0][i].set_xticks(ticks = ticks, labels = lam_ticks, fontsize = resolution, rotation=45)
-    ax[0][i].set_title(fr"Probability of cotransmission, $\rho$ = {rho}", fontsize = resolution + 30)
+    ax[0][i].set_yticks(ticks = ticks, labels = eta_ticks, fontsize = 2*resolution)
+    ax[0][i].set_xticks(ticks = ticks, labels = lam_ticks, fontsize = 2*resolution, rotation=45)
+    ax[0][i].set_title(fr"Probability of cotransmission, $\rho$ = {rho}", fontsize = 2*resolution)
     
     #Adding the panel label
     ax[0][i].text(0.05,0.9,panel_labels[i], transform=ax[0][i].transAxes, fontsize = 2*resolution)    
     
 #Adding the axis labels that we want
-ax[0][0].set_ylabel(r"Hyperparasite infectivity modifier, $\eta$", fontsize = resolution + 30)
-ax[0][1].set_xlabel(r"Hyperparasite virulence modifier, $\lambda$", fontsize = resolution + 30)
+ax[0][0].set_ylabel(r"Hyperparasite transmission modifier, $\eta$", fontsize = 2*resolution)
+ax[0][1].set_xlabel(r"Hyperparasite virulence modifier, $\lambda$", fontsize = 2*resolution)
 
 #Saving the file as both a pdf and a png
 plt.savefig(f"../supplementary_figures/branching_heatmaps.pdf", bbox_inches = "tight") 

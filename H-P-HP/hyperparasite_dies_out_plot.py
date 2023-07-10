@@ -120,8 +120,9 @@ fig.legend(
    loc="upper right",
    bbox_to_anchor=(0.8,0.8)
 )
-ax.set_xlabel(r"Parasite virulence, $\alpha$", fontsize = 28)
+ax.set_xlabel(r"Intrinsic virulence, $\alpha$", fontsize = 28)
 ax.set_xlim([0,3])
+ax.tick_params(axis='both', which='major', labelsize=24)
 ax.set_ylabel("Evolutionary Time", fontsize = 28)
 
 # ax.legend(loc='center left', bbox_to_anchor=(0.6, 0.85), fontsize = 14)
