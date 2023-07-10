@@ -1,3 +1,8 @@
+"""
+This file is used to make Fig. S3. It is used to verify whether we see similar
+results to Sandhu 2021, when our system is similar to theirs.
+"""
+
 import sys, os, shutil
 import runner
 import numpy as np

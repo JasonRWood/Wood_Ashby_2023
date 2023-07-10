@@ -1,3 +1,8 @@
+"""
+This file is used to create heatmaps which demonstrate the invasion region of the
+hyperparasite. Not used in the manuscript, held for completeness.
+"""
+
 import sys, os, shutil
 import runner
 import numpy as np
@@ -226,31 +231,18 @@ for i, rho in enumerate(rhos):
         temp_row = []
         temp_row_H = []
         for lam in lams:
+            #This function calculates the Jacobian
             Jac = Jacobian(S,I,H,b,beta,alpha,eta,d,q,gamma,rho,sigma,lam)
 
+            #This function calculates the eigenvalues and eigenvectors of the Jacobian
             w, v = np.linalg.eig(Jac)
 
             eig_max = max(w.real)
-#             temp_row.append(eig_max>0)
             temp_row.append(eig_max)
 
-    #         y_2 = sol.eco_steady_state(
-    #             beta, alpha, sigma, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed
-    #         )
-
-    #         S_2 = y_2[0]
-    #         I_2 = y_2[1]
-    #         H_2 = y_2[2]
-
-    #         Jac = Jacobian(S_2,I_2,H_2,b,beta,alpha,eta,d,q,gamma,rho,sigma,lam)
-
-    #         w, v = np.linalg.eig(Jac)
-
-    #         eig_max = max(w.real)
-    #         temp_row_H.append(eig_max>0)
         output_mat.append(temp_row)
-    #     output_mat_H.append(temp_row_H)
-#     print(output_mat_H)
+    
+    #This plotting code creates the Invasion heatmaps for the hyperparasite
     fig, ax = plt.subplots(figsize=(15, 15))
     im = ax.imshow(np.asarray(output_mat), origin = "lower")
     fig.colorbar(im, ax=ax)
@@ -261,9 +253,3 @@ for i, rho in enumerate(rhos):
     ax.set_title(fr"Parasite stability matrix with $\rho$ value {rho}")
     plt.savefig(f"../supplementary_figures/para_matrix{i}.png")
     plt.close()
-
-# fig, ax = plt.subplots(figsize=(15, 15))
-# im = ax.imshow(np.asarray(output_mat_H), origin = "lower")
-# ax.set_title(fr"Hyperparasite stability matrix with $\rho$ value {rho}")
-# plt.savefig("../test_H.png")
-# plt.close()

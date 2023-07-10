@@ -1,6 +1,6 @@
 """This file creates a folder with a unique 4 word title in the single_evo folder
 located within the outputs folder. We then calculate the singular strategies
-for a given set of parameters and a specified trade-off.
+for a given set of parameters and a specified trade-off. Just for personal use.
 """
 import sys, os, shutil
 import runner

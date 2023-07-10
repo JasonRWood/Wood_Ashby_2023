@@ -204,6 +204,7 @@ plt.subplots_adjust(wspace=0.3, hspace = 0.2)
 gs = fig.add_gridspec(2,3)
 ax = [fig.add_subplot(gs[:, 0]), fig.add_subplot(gs[0,1]), fig.add_subplot(gs[0,2]), fig.add_subplot(gs[1,1]), fig.add_subplot(gs[1,2])]
 
+#Making the various subfigures
 ax[0].scatter(alpha_vals_pre_branch, evo_steps_pre_branch_sim)
 ax[0].scatter(alpha_branch_1, evo_steps_branch_1)
 ax[0].scatter(alpha_branch_2, evo_steps_branch_2)
@@ -216,7 +217,6 @@ ax[0].text(0.02,1.01,panel_labels[0], transform=ax[0].transAxes, fontsize = 18)
 
 ax[1].plot(evo_steps_unique, S_vals)
 ax[1].plot(evo_plotting_mean, host_density, "k--")
-# ax[1].set_title("Population Densities", fontsize = 17)
 ax[1].set_xticks([0,1000,2000,3000,4000])
 ax[1].set_xlim([0, max(evo_steps)])
 ax[1].set_ylim([0, 2])

@@ -4,7 +4,7 @@ assumes that 3 csv files are stored in the data folder with the names
 branching_mat_0.csv, branching_mat_1.csv and branching_mat_2.csv. This
 file then produces a .png file and .pdf file of these images, adding
 various labels for clarity. This file requires the pandas, numpy and
-matplotlib libraries.
+matplotlib libraries. This file is used to create Fig. 4.
 """
 
 #Importing needed libraries
@@ -38,13 +38,12 @@ for i in range(1):
 for i in range(3):
     rho = rhos[i]
     
+    #Reading in the stored data
     df = pd.read_csv(f"../data/branching_mat_{i}.csv")
-#     df = df[df["eta_val"] <= 1.0]
+    
     etas = df["eta_val"].values
     lams = [float(val) for val in df.columns[1:]]
     value_matrix = df[df.columns[1:]].values
-    
-    
     
     #Plotting the heatmap
     ax[0][i].imshow(value_matrix, origin = "lower", cmap = "Set3")

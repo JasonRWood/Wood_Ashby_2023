@@ -1,4 +1,6 @@
-"""This file demonstrates the consequences of the hyperparasite dying out after the parasite has reached an ESS
+"""
+This file demonstrates the consequences of the hyperparasite dying out after the parasite
+has reached an ESS. This file is used to create Fig. S4.
 """
 #We import the libraries we need
 import sys, os, shutil

@@ -1,5 +1,6 @@
-"""This file demonstrates the consequences of the hysteresis affect caused by the introduction
-of hyperparasites.
+"""
+This file demonstrates the consequences of the hysteresis affect caused by the introduction
+of hyperparasites. This file is used to create Fig. 2.
 """
 #We import the libraries we need
 import sys, os, shutil
