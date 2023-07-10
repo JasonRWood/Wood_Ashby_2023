@@ -1,3 +1,9 @@
+"""
+This file contains the expressions for the singular strategies calculated using
+Maple. This file also contains the fitness gradients used to calculate the 
+singular strategies in files such as eta_evo.py.
+"""
+
 from math import sqrt
 
 

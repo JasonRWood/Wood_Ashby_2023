@@ -1,3 +1,6 @@
+"""
+These functions are used to assist in the calculating of singular strategies.
+"""
 import sys
 import runner
 import numpy as np
