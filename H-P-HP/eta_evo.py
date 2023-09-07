@@ -363,8 +363,8 @@ lams = [0.5, 1, 2.0]
 # rhos = [1.0]
 b = 2.0
 q = 0.1
-d = 0.1
-gamma = 0.1
+d = 0.5
+gamma = 0.5
 # gamma = 1.0
 hyper = 1.0
 c1 = 0.75
@@ -373,7 +373,7 @@ b_base = 1
 q_base = 1
 
 alpha_max = 5
-sigma_max = 0.4
+sigma_max = 4.0
 beta_max = 5
 
 sigma_min = 0.0
@@ -974,7 +974,7 @@ for lam_tracker, lam in enumerate(lams):
     
     ax1[0][lam_tracker].set_xlabel("", fontsize = 0)
 #     ax1[0][lam_tracker].set_ylim([0, alpha_max_res])
-    ax1[0][lam_tracker].set_ylim([0, 2.5])
+    ax1[0][lam_tracker].set_ylim([0, 5.0])
     ax1[0][lam_tracker].tick_params(axis='both', which='major', labelsize=34)
     if lam_tracker == 0:
         ax1[0][lam_tracker].set_ylabel(r"Intrinsic virulence, $\alpha^*$", fontsize = 34)
@@ -1091,7 +1091,7 @@ for lam_tracker, lam in enumerate(lams):
 
     
     ax1[2][lam_tracker].set_xlabel("", fontsize = 0)
-    ax1[2][lam_tracker].set_ylim([0.0, 8.0])
+    ax1[2][lam_tracker].set_ylim([0.0, 4.0])
     ax1[2][lam_tracker].text(0.03, 1.01,texts[2][lam_tracker], transform=ax1[2][lam_tracker].transAxes, fontsize = 30)
     ax1[2][lam_tracker].tick_params(axis='both', which='major', labelsize=34)
     if lam_tracker == 0:
@@ -1121,7 +1121,7 @@ for lam_tracker, lam in enumerate(lams):
 #     else:
         #ax2[2][lam_tracker].set_xlabel("", fontsize = 0)
         
-    ax1[3][lam_tracker].set_ylim([0.0, 1.1])
+    ax1[3][lam_tracker].set_ylim([0.0, 1.5])
     ax1[3][lam_tracker].tick_params(axis='both', which='major', labelsize=34)
     ax1[3][lam_tracker].text(0.03, 1.01,texts[3][lam_tracker], transform=ax1[3][lam_tracker].transAxes, fontsize = 30)
     #ax2[2][lam_tracker].text(0.03, 1.01,texts[2][lam_tracker], transform=#ax2[2][lam_tracker].transAxes, fontsize = 30)
