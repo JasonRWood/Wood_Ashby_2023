@@ -65,9 +65,9 @@ def calculate_alpha_gradient_vector(sol, resolution, beta_max, alpha_max, alpha_
             beta, alpha, sigma, b, q, d, rho, eta, gamma, lam, c1, c2, hyper, seed
         )
         
-        S = y[0]*(y[0] >= 1e-3)
-        I = y[1]*(y[1] >= 1e-3)
-        H = y[2]*(y[2] >= 1e-3)
+        S = y[0]
+        I = y[1]
+        H = y[2]
         
 #         if depth == 0 and eta == 1.0:
 #             print(y, S, I, H, eta, alpha, beta)
