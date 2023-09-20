@@ -1188,5 +1188,6 @@ fig1.legend(lines1,
    )
 
 plt.savefig(f"{output_folder}/evolved_virulences.png", bbox_inches='tight')
+plt.savefig(f"{output_folder}/evolved_virulences.tiff", bbox_inches='tight')
 plt.close()
 del sol

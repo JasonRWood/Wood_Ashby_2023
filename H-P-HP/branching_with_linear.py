@@ -258,4 +258,5 @@ ax[4].text(0.02,1.05,panel_labels[4], transform=ax[4].transAxes, fontsize = 18)
 #Saving the figure as a png and a pdf
 plt.savefig("../supplementary_figures/branching_fig.pdf", bbox_inches = "tight")
 plt.savefig("../supplementary_figures/branching_fig.png", bbox_inches = "tight")
+plt.savefig("../supplementary_figures/branching_fig.tiff", bbox_inches = "tight")
 plt.close()

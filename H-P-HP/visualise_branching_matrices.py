@@ -72,4 +72,5 @@ ax[0][1].set_xlabel(r"Hyperparasite virulence modifier, $\lambda$", fontsize = 2
 #Saving the file as both a pdf and a png
 plt.savefig(f"../supplementary_figures/branching_heatmaps.pdf", bbox_inches = "tight") 
 plt.savefig(f"../supplementary_figures/branching_heatmaps.png", bbox_inches = "tight")
+plt.savefig(f"../supplementary_figures/branching_heatmaps.tiff", bbox_inches = "tight")
 plt.close()
