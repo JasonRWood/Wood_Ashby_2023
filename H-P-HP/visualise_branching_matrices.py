@@ -70,7 +70,7 @@ ax[0][0].set_ylabel(r"Hyperparasite transmission modifier, $\eta$", fontsize = 2
 ax[0][1].set_xlabel(r"Hyperparasite virulence modifier, $\lambda$", fontsize = 2*resolution)
 
 #Saving the file as both a pdf and a png
-plt.savefig(f"../supplementary_figures/branching_heatmaps.pdf", bbox_inches = "tight") 
-plt.savefig(f"../supplementary_figures/branching_heatmaps.png", bbox_inches = "tight")
-plt.savefig(f"../supplementary_figures/branching_heatmaps.tiff", bbox_inches = "tight")
+plt.savefig(f"../supplementary_figures/branching_heatmaps.pdf", bbox_inches = "tight", dpi = 300) 
+plt.savefig(f"../supplementary_figures/branching_heatmaps.png", bbox_inches = "tight", dpi = 300)
+plt.savefig(f"../supplementary_figures/branching_heatmaps.tiff", bbox_inches = "tight", dpi = 300)
 plt.close()

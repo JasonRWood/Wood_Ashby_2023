@@ -1187,7 +1187,7 @@ fig1.legend(lines1,
    bbox_to_anchor=(0.90,0.85)
    )
 
-plt.savefig(f"{output_folder}/evolved_virulences.png", bbox_inches='tight')
-plt.savefig(f"{output_folder}/evolved_virulences.tiff", bbox_inches='tight')
+plt.savefig(f"{output_folder}/evolved_virulences.png", bbox_inches='tight', dpi = 600)
+plt.savefig(f"{output_folder}/evolved_virulences.tiff", bbox_inches='tight', dpi = 600)
 plt.close()
 del sol
