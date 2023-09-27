@@ -22,7 +22,7 @@ panel_labels = ["(A)", "(B)", "(C)"]
 #are reasonably big. We use gridspec to specify the 
 #layout of the figures
 
-resolution = 50
+resolution = 3
 
 fig = plt.figure(figsize = (2.5*resolution, 2.5*resolution))
 gs = fig.add_gridspec(1,3)
